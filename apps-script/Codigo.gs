@@ -35,7 +35,9 @@ function instalar() {
   ScriptApp.newTrigger('backupDiario').timeBased().everyDays(1).atHour(3).inTimezone(TZ).create();
   CalendarApp.getDefaultCalendar().getName();
   MailApp.getRemainingDailyQuota();
+  planilha();
   Logger.log('✅ Instalação concluída. Os dados ficam na pasta "Florescer — Dados da plataforma" do seu Google Drive.');
+  Logger.log('📊 Planilha: ' + planilha().getUrl());
   Logger.log('🔑 SUA CHAVE DE ACESSO (copie e guarde em segredo): ' + P.getProperty('ADMIN_KEY'));
 }
 function mostrarChave() { Logger.log(P.getProperty('ADMIN_KEY')); }
@@ -77,7 +79,9 @@ function lerJSON(prop, padrao) {
 function gravarJSON(prop, obj) { DriveApp.getFileById(P.getProperty(prop)).setContent(JSON.stringify(obj)); }
 
 function carregar() {
-  return { ok: true, state: lerJSON('STATE_ID', {}), version: +P.getProperty('VERSION'), bookings: lerJSON('BOOK_ID', []) };
+  let sheetUrl = '';
+  try { sheetUrl = planilha().getUrl(); } catch (e) {}
+  return { ok: true, state: lerJSON('STATE_ID', {}), version: +P.getProperty('VERSION'), bookings: lerJSON('BOOK_ID', []), sheetUrl: sheetUrl };
 }
 function salvar(p) {
   if (!p.state || !Array.isArray(p.state.pacientes)) throw new Error('Dados inválidos.');
@@ -88,8 +92,9 @@ function salvar(p) {
     if (!p.force && +p.baseVersion !== v) return { ok: false, conflict: true, version: v };
     gravarJSON('STATE_ID', p.state);
     P.setProperty('VERSION', String(v + 1));
-    return { ok: true, version: v + 1 };
   } finally { lock.releaseLock(); }
+  try { atualizarPlanilha(p.state); } catch (e) { console.error('Planilha: ' + e); }
+  return { ok: true, version: +P.getProperty('VERSION') };
 }
 function contexto() {
   const st = lerJSON('STATE_ID', {});
@@ -206,6 +211,7 @@ function agendar(p) {
     const lista = lerJSON('BOOK_ID', []);
     lista.push(b);
     gravarJSON('BOOK_ID', lista);
+    try { abaAgendamentos(planilha(), lista); } catch (e) { console.error('Planilha: ' + e); }
 
     try { emailConfirmacao(s, cfg, b, local); } catch (e) { console.error(e); }
     try { emailAviso(s, b); } catch (e) { console.error(e); }
@@ -261,6 +267,100 @@ function emailAviso(s, b) {
     htmlBody: moldura(s, 'Novo <i style="color:#A8834F">agendamento</i>', corpo)
   });
 }
+
+/* ============ PLANILHA ESPELHO (Google Sheets, somente leitura) ============ */
+const EXAMES = {
+  amh: 'AMH', fsh: 'FSH', lh: 'LH', e2: 'Estradiol', prog: 'Progesterona', prl: 'Prolactina', testo: 'Testosterona',
+  tsh: 'TSH', t4l: 'T4 livre', antitpo: 'Anti-TPO', glic: 'Glicemia', ins: 'Insulina', hba1c: 'HbA1c', pcr: 'PCR-us',
+  vitd: 'Vitamina D', ferr: 'Ferritina', b12: 'B12', fol: 'Folato', hcy: 'Homocisteína', zn: 'Zinco',
+  sp_conc: 'Esperma: concentração', sp_mot: 'Esperma: motilidade', sp_morf: 'Esperma: morfologia', sp_vol: 'Esperma: volume',
+  sp_dna: 'Esperma: fragmentação DNA', p_vitd: 'Parceiro: vitamina D'
+};
+const N_PERGUNTAS_SCORE = 14;
+
+function planilha() {
+  const id = P.getProperty('SHEET_ID');
+  if (id) { try { return SpreadsheetApp.openById(id); } catch (e) {} }
+  const ss = SpreadsheetApp.create('Florescer — Planilha (somente leitura)');
+  DriveApp.getFileById(ss.getId()).moveTo(DriveApp.getFolderById(P.getProperty('FOLDER_ID')));
+  P.setProperty('SHEET_ID', ss.getId());
+  return ss;
+}
+function aba(ss, nome, cabecalho, linhas) {
+  const sh = ss.getSheetByName(nome) || ss.insertSheet(nome);
+  sh.clear();
+  // Texto que começa com = + - @ viraria fórmula: grava como texto puro
+  const dados = [cabecalho].concat(linhas).map(l => l.map(v => typeof v === 'string' && /^[=+\-@]/.test(v) ? "'" + v : v));
+  sh.getRange(1, 1, dados.length, cabecalho.length).setValues(dados);
+  sh.getRange(1, 1, 1, cabecalho.length).setFontWeight('bold').setBackground('#15120F').setFontColor('#F1E9DC');
+  sh.setFrozenRows(1);
+  if (!sh.getProtections(SpreadsheetApp.ProtectionType.SHEET).length) {
+    sh.protect().setWarningOnly(true).setDescription('Gerada pela plataforma Florescer. Edite os dados pela plataforma.');
+  }
+  return sh;
+}
+const brData = d => d ? String(d).split('-').reverse().join('/') : '';
+const idade = n => { if (!n) return ''; const b = new Date(n + 'T12:00:00'), h = new Date(); let a = h.getFullYear() - b.getFullYear(); if (h < new Date(h.getFullYear(), b.getMonth(), b.getDate())) a--; return a; };
+const ordenar = (a, k) => (a || []).slice().sort((x, y) => String(x[k] || '').localeCompare(String(y[k] || '')));
+const ultimo = a => a && a.length ? a[a.length - 1] : null;
+
+function atualizarPlanilha(st) {
+  const ss = planilha();
+  const pac = st.pacientes || [], ag = st.agenda || [];
+  const fase = id => ((st.protocolo || []).find(f => f.id === id) || {}).nome || '';
+  const nome = id => (pac.find(p => p.id === id) || {}).nome || '';
+  const hoje = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
+
+  aba(ss, 'Pacientes', ['Nome', 'Status', 'Fase do método', 'Início', 'Nascimento', 'Idade', 'WhatsApp', 'E-mail', 'Cidade', 'Parceiro(a)', 'Origem',
+    'Tentando há (meses)', 'Diagnósticos', 'Último peso (kg)', 'IMC', 'Pontuação fértil (%)', 'Próxima consulta'],
+    pac.map(p => {
+      const a = p.anamnese || {}, av = ultimo(ordenar(p.avaliacoes, 'data')) || {}, sc = ultimo(ordenar(p.scores, 'data'));
+      const imc = av.peso && av.altura ? Math.round(av.peso / Math.pow(av.altura / 100, 2) * 10) / 10 : '';
+      const pts = sc ? Math.round(Object.keys(sc.resp || {}).reduce((s, k) => s + (+sc.resp[k] || 0), 0) / (N_PERGUNTAS_SCORE * 2) * 100) : '';
+      const nx = ordenar(ag.filter(x => x.pid === p.id && x.status === 'Agendada' && x.data >= hoje), 'data')[0];
+      return [p.nome, p.status, fase(p.fase), brData(p.inicio), brData(p.nascimento), idade(p.nascimento), p.telefone || '', p.email || '', p.cidade || '',
+        p.parceiro || '', p.origem || '', a.tentando || '', (a.diagnosticos || []).join(', '), av.peso || '', imc, pts, nx ? brData(nx.data) + ' ' + (nx.hora || '') : ''];
+    }));
+
+  aba(ss, 'Consultas', ['Data', 'Hora', 'Paciente', 'Tipo', 'Modalidade', 'Status', 'Valor (R$)', 'Pago', 'Origem'],
+    ordenar(ag, 'data').reverse().map(a => [brData(a.data), a.hora || '', nome(a.pid), a.tipo || '', a.modalidade || '', a.status || '', +a.valor || '', a.pago ? 'Sim' : 'Não', a.bookingId ? 'Site' : 'Manual']));
+
+  const meses = {};
+  ag.forEach(a => {
+    if (!a.data) return;
+    const m = a.data.slice(0, 7), o = meses[m] = meses[m] || [0, 0, 0, 0];
+    if (a.pago) o[0] += +a.valor || 0; else if (a.status !== 'Faltou' && a.status !== 'Cancelada') o[1] += +a.valor || 0;
+    if (a.status === 'Realizada') o[2]++;
+    if (a.status === 'Faltou') o[3]++;
+  });
+  aba(ss, 'Financeiro', ['Mês', 'Recebido (R$)', 'A receber (R$)', 'Consultas realizadas', 'Faltas'],
+    Object.keys(meses).sort().reverse().map(m => [m.split('-').reverse().join('/')].concat(meses[m])));
+
+  const linhasEx = [];
+  pac.forEach(p => (p.exames || []).forEach(e => {
+    const v = e.v || {};
+    const homa = v.glic && v.ins ? Math.round(v.glic * v.ins / 405 * 100) / 100 : '';
+    linhasEx.push([e.data, p.nome, homa].concat(Object.keys(EXAMES).map(k => v[k] == null ? '' : v[k])));
+  }));
+  aba(ss, 'Exames', ['Data', 'Paciente', 'HOMA-IR'].concat(Object.keys(EXAMES).map(k => EXAMES[k])),
+    linhasEx.sort((a, b) => String(b[0]).localeCompare(String(a[0]))).map(l => [brData(l[0])].concat(l.slice(1))));
+
+  aba(ss, 'Gestações', ['Paciente', 'Beta positivo', 'Como engravidou', 'Meses de método', 'Diagnósticos', 'Depoimento'],
+    pac.filter(p => p.resultado).map(p => {
+      const meses = p.inicio && p.resultado.data ? Math.round((new Date(p.resultado.data) - new Date(p.inicio)) / 864e5 / 30.4 * 10) / 10 : '';
+      return [p.nome, brData(p.resultado.data), p.resultado.forma || '', meses, ((p.anamnese || {}).diagnosticos || []).join(', '), p.resultado.obs || ''];
+    }));
+
+  abaAgendamentos(ss, lerJSON('BOOK_ID', []));
+  const padrao = ss.getSheetByName('Página1') || ss.getSheetByName('Sheet1');
+  if (padrao && ss.getSheets().length > 1) ss.deleteSheet(padrao);
+}
+function abaAgendamentos(ss, lista) {
+  aba(ss, 'Agendamentos online', ['Agendado em', 'Nome', 'E-mail', 'WhatsApp', 'Data', 'Hora', 'Tipo', 'Modalidade', 'Google Meet', 'Observações'],
+    lista.slice().reverse().map(b => [Utilities.formatDate(new Date(b.criadoEm), TZ, 'dd/MM/yyyy HH:mm'), b.nome, b.email, b.telefone, brData(b.data), b.hora, b.tipo, b.modalidade, b.meet || '', b.obs || '']));
+}
+/** Rode pelo editor para recriar a planilha a qualquer momento. */
+function recriarPlanilha() { atualizarPlanilha(lerJSON('STATE_ID', {})); Logger.log('📊 ' + planilha().getUrl()); }
 
 /* ============ BACKUP DIÁRIO ============ */
 function backupDiario() {

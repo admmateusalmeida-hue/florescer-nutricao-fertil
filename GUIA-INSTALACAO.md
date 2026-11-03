@@ -5,6 +5,7 @@ Tempo estimado: 15 minutos. Faça tudo **logado na conta Google da nutricionista
 O que você vai ganhar:
 - As pacientes ficam salvas no **Google Drive** dela (pasta "Florescer — Dados da plataforma"), com **backup automático diário** dos últimos 30 dias.
 - A plataforma abre em **qualquer computador**, sempre com os mesmos dados.
+- Uma **planilha no Google Sheets** ("Florescer — Planilha (somente leitura)", na mesma pasta) é atualizada sozinha a cada alteração, com as abas **Pacientes, Consultas, Financeiro, Exames, Gestações e Agendamentos online** — boa para filtrar, somar e consultar pelo celular. As edições continuam sendo feitas na plataforma; a planilha avisa se alguém tentar editar.
 - A paciente **marca a própria consulta** em um link, recebe a **confirmação por e-mail** e o **convite na Google Agenda** (com link do Google Meet nas consultas online).
 - Os horários já ocupados na Google Agenda dela ficam bloqueados automaticamente.
 
@@ -39,6 +40,8 @@ O que você vai ganhar:
    **Copie essa chave** e guarde em local seguro (ex.: gerenciador de senhas). Ela é a senha dos dados.
 
 > Perdeu a chave? Escolha a função **mostrarChave** e clique em Executar.
+>
+> A planilha aparece em **Configurações → Dados na nuvem → Abrir planilha** depois de conectar (Passo 5). Se um dia ela for apagada, rode a função **recriarPlanilha**.
 
 ## Passo 4 — Publicar a API
 

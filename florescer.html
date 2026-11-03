@@ -469,11 +469,11 @@ function save(){localSave();cloudSchedule()}
 
 /* ============ NUVEM (Google Drive via Apps Script) ============ */
 const PAGES_URL='https://admmateusalmeida-hue.github.io/florescer-nutricao-fertil/';
-const C={url:'',key:'',version:0,timer:null,saving:false,dirty:false,status:'local',at:''};
-try{const c=JSON.parse(localStorage.getItem(KEY+'_cloud')||'{}');C.url=c.url||window.FLORESCER_API||'';C.key=c.key||'';C.version=+c.version||0}catch(e){C.url=window.FLORESCER_API||''}
+const C={url:'',key:'',sheet:'',version:0,timer:null,saving:false,dirty:false,status:'local',at:''};
+try{const c=JSON.parse(localStorage.getItem(KEY+'_cloud')||'{}');C.url=c.url||window.FLORESCER_API||'';C.key=c.key||'';C.sheet=c.sheet||'';C.version=+c.version||0}catch(e){C.url=window.FLORESCER_API||''}
 const cloudOn=()=>!!(C.url&&C.key);
 const hhmm=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-function cloudPersist(){try{localStorage.setItem(KEY+'_cloud',JSON.stringify({url:C.url,key:C.key,version:C.version}))}catch(e){}}
+function cloudPersist(){try{localStorage.setItem(KEY+'_cloud',JSON.stringify({url:C.url,key:C.key,sheet:C.sheet,version:C.version}))}catch(e){}}
 async function cloudCall(action,body={}){
  const r=await fetch(C.url,{method:'POST',body:JSON.stringify({action,key:C.key,...body})});
  const j=await r.json();if(!j.ok&&!j.conflict)throw new Error(j.error||'Erro na nuvem');return j}
@@ -495,6 +495,7 @@ async function cloudSave(){
  C.saving=false;syncUI()}
 async function cloudLoad(force){
  const j=await cloudCall('load');
+ if(j.sheetUrl&&j.sheetUrl!==C.sheet){C.sheet=j.sheetUrl;cloudPersist()}
  if(!j.state||!Array.isArray(j.state.pacientes)){const r=await cloudCall('save',{state:S,force:true});C.version=r.version;cloudPersist();toast('Seus dados foram enviados para o Google Drive')}
  else if(force||j.version!==C.version){S=normalize(Object.assign(defaultState(),j.state));C.version=j.version;cloudPersist();localSave();force=true}
  const n=importBookings(j.bookings||[]);
@@ -1011,7 +1012,8 @@ function vCfg(){const s=S.settings;return `<div class="top"><div><span class="ey
  <div class="grid" style="align-content:start">
   <div class="card"><span class="eyebrow">Google Drive</span><h2>Dados na <em>nuvem</em></h2>
   ${cloudOn()?`<div class="alert good">● <span>Conectado. Tudo o que você cadastra é salvo automaticamente no seu Google Drive, com backup diário dos últimos 30 dias.</span></div>
-  <div class="row"><button class="btn" onclick="cloudLoad(true).then(()=>toast('Dados atualizados')).catch(e=>alert(e.message))">Atualizar agora</button><button class="btn ghost danger" onclick="cloudDisconnect()">Desconectar este navegador</button></div>`
+  ${C.sheet?`<div class="alert">📊 <span>Uma <b>planilha no Google Sheets</b> é atualizada sozinha a cada alteração, com as abas Pacientes, Consultas, Financeiro, Exames, Gestações e Agendamentos online. É só para consulta e filtros: as edições continuam sendo feitas aqui.</span></div>`:''}
+  <div class="row">${C.sheet?`<a class="btn pri" href="${esc(C.sheet)}" target="_blank" rel="noopener">Abrir planilha</a>`:''}<button class="btn" onclick="cloudLoad(true).then(()=>toast('Dados atualizados')).catch(e=>alert(e.message))">Atualizar agora</button><button class="btn ghost danger" onclick="cloudDisconnect()">Desconectar este navegador</button></div>`
   :`<p class="muted">Conecte para guardar as pacientes no seu Google Drive e acessar de qualquer computador. Veja o guia de instalação no GitHub.</p>
   <form id="cloudf" class="form" onsubmit="event.preventDefault();cloudConnect()">${F({k:'url',l:'URL da API (termina em /exec)',w:'full'},C.url)}${F({k:'key',l:'Chave de acesso',t:'password',w:'full'},'')}</form>
   <button class="btn pri" style="margin-top:12px" onclick="cloudConnect()">Conectar</button>`}</div>
