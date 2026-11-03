@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Florescer Nutrição Fértil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F3EEE6;--surface:#FBF8F3;--surface2:#EFE8DD;--ink:#1A1714;--muted:#7B7166;--line:#E2D8CA;
+  --brand:#A8834F;--brand-ink:#FBF8F3;--brand-soft:#F1E7D6;--sage:#6E7B5C;--sage-soft:#E6E8DC;
+  --gold:#B8925A;--gold-soft:#F3E9D7;--danger:#A9473A;--danger-soft:#F4E1DC;--blue:#4F6E86;--blue-soft:#E2E8EC;
+  --night:#15120F;--night2:#211D18;--night-ink:#F1E9DC;--night-muted:#A0968A;--night-line:#2F2A23;
+  --serif:'Playfair Display',Georgia,serif;--r:6px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12100D;--surface:#1B1814;--surface2:#24201B;--ink:#EFE7DA;--muted:#9C9284;--line:#332D26;
+  --brand:#C9A46B;--brand-ink:#12100D;--brand-soft:#2E261B;--sage:#A3B08C;--sage-soft:#242A1F;
+  --gold:#D1AE72;--gold-soft:#2F281C;--danger:#D98274;--danger-soft:#3A231F;--blue:#8FB0C7;--blue-soft:#1D262D;
+  --night:#0B0907;--night2:#17140F;--night-line:#2A251E;
+}}
+:root[data-theme="dark"]{
+  --bg:#12100D;--surface:#1B1814;--surface2:#24201B;--ink:#EFE7DA;--muted:#9C9284;--line:#332D26;
+  --brand:#C9A46B;--brand-ink:#12100D;--brand-soft:#2E261B;--sage:#A3B08C;--sage-soft:#242A1F;
+  --gold:#D1AE72;--gold-soft:#2F281C;--danger:#D98274;--danger-soft:#3A231F;--blue:#8FB0C7;--blue-soft:#1D262D;
+  --night:#0B0907;--night2:#17140F;--night-line:#2A251E;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;letter-spacing:-.005em}
+h1{font-size:36px;line-height:1.12}h2{font-size:21px}h3{font-size:17px}
+h1 em,h2 em{font-style:italic;color:var(--brand)}
+a{color:var(--brand)}
+button,input,select,textarea{font:inherit;color:inherit}
+.eyebrow{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--brand);font-weight:600;margin-bottom:10px;display:block}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{background:var(--night);color:var(--night-muted);padding:28px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:2px}
+.logo{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px 26px;margin-bottom:14px;border-bottom:1px solid var(--night-line)}
+.logo-mark{width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);flex:none}
+.logo b{font-family:var(--serif);font-weight:500;font-size:17px;display:block;line-height:1.2;color:var(--night-ink);letter-spacing:.28em;text-transform:uppercase}
+.logo small{color:var(--gold);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase}
+.nav{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:3px;color:var(--night-muted);cursor:pointer;border:0;background:none;text-align:left;width:100%;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border-left:2px solid transparent}
+.nav:hover{color:var(--night-ink);background:rgba(255,255,255,.03)}
+.nav.on{color:var(--gold);border-left-color:var(--gold);background:linear-gradient(90deg,rgba(184,146,90,.14),transparent)}
+.nav svg{width:17px;height:17px;flex:none;stroke-width:1.5}
+.side-foot{margin-top:auto;font-size:10.5px;color:var(--night-muted);padding:14px 10px 0;border-top:1px solid var(--night-line);line-height:1.6}
+main{padding:36px 40px 70px;min-width:0;max-width:1320px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.top p{margin:8px 0 0;color:var(--muted);max-width:620px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px}
+.card h2,.card h3{margin-bottom:14px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{display:flex;flex-direction:column;gap:3px}
+.kpi .v{font-family:var(--serif);font-size:34px;font-weight:500;line-height:1.1}
+.kpi .l{color:var(--muted);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.kpi .s{font-size:12px;color:var(--brand)}
+.btn{border:1px solid var(--ink);background:transparent;padding:10px 18px;border-radius:2px;cursor:pointer;font-weight:600;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:.15s;text-decoration:none;color:var(--ink)}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.pri:not(.sm)::after{content:"→";color:var(--gold);font-size:14px;letter-spacing:0}
+.btn.pri:hover{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#15120F}
+.btn.gold:hover{filter:brightness(1.08);background:var(--gold);color:#15120F}
+.btn.sm{padding:6px 11px;font-size:10px;letter-spacing:.1em}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);background:var(--surface2)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.danger:hover{background:var(--danger);color:#fff}
+.btn.ghost.danger{border-color:transparent}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.muted{color:var(--muted)}.small{font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:2px;font-size:9.5px;font-weight:600;background:var(--surface2);color:var(--muted);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase}
+.b-brand{background:var(--brand-soft);color:var(--brand)}.b-sage{background:var(--sage-soft);color:var(--sage)}
+.b-gold{background:var(--gold-soft);color:var(--gold)}.b-danger{background:var(--danger-soft);color:var(--danger)}.b-blue{background:var(--blue-soft);color:var(--blue)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);font-weight:600;padding:10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.tbl-wrap{overflow-x:auto}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:9px 11px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+input[type=color]{padding:2px;height:40px}
+textarea{resize:vertical}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.form .full{grid-column:1/-1}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.chk{display:inline-flex}
+.chk input{display:none}
+.chk span{padding:6px 12px;border:1px solid var(--line);border-radius:2px;cursor:pointer;font-size:12.5px;user-select:none;background:var(--surface)}
+.chk input:checked+span{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.sec-title{font-family:var(--serif);font-size:19px;font-style:italic;margin:26px 0 8px;grid-column:1/-1;padding-bottom:8px;border-bottom:1px solid var(--line);color:var(--ink)}
+.sec-title:first-child{margin-top:0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:24px 0 24px;overflow-x:auto;scrollbar-width:none}
+.tab{padding:12px 14px;border:0;background:none;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);border-color:var(--gold)}
+.avatar{width:58px;height:58px;border-radius:50%;background:var(--night);color:var(--gold);display:grid;place-items:center;font-family:var(--serif);font-size:21px;font-weight:500;flex:none;border:1px solid var(--gold)}
+.avatar.sm{width:36px;height:36px;font-size:13px}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-family:var(--serif);font-style:italic;font-size:15px}
+.list-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.list-item:last-child{border-bottom:0}
+.progress{height:4px;background:var(--surface2);border-radius:0;overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--gold)}
+.bar-row{display:grid;grid-template-columns:92px 1fr 110px;gap:10px;align-items:center;font-size:12.5px;margin:8px 0}
+.cycle{display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:4px;margin:12px 0}
+.cday{aspect-ratio:1;border-radius:2px;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--surface2);color:var(--muted);position:relative}
+.cday.men{background:var(--danger-soft);color:var(--danger)}
+.cday.fer{background:var(--sage-soft);color:var(--sage)}
+.cday.ovu{background:var(--sage);color:#fff}
+.cday.lut{background:var(--gold-soft);color:var(--gold)}
+.cday.today{outline:2px solid var(--ink);outline-offset:1px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.meal{border:1px solid var(--line);border-radius:var(--r);margin-bottom:16px;overflow:hidden;background:var(--surface)}
+.meal-head{display:flex;gap:10px;align-items:center;padding:12px 16px;background:var(--night);color:var(--night-ink);flex-wrap:wrap}
+.meal-head input{width:auto;background:transparent;border-color:transparent;padding:4px 6px;color:var(--night-ink)}
+.meal-head input:not([type=time]){font-family:var(--serif);font-size:17px}
+.meal-head input[type=time]{color:var(--gold);font-weight:600;color-scheme:dark}
+.meal-head input:hover,.meal-head input:focus{border-color:var(--night-line);box-shadow:none}
+.meal-head .muted{color:var(--night-muted)}
+.meal-head .btn.ghost{color:var(--night-muted)}
+.meal-head .btn.ghost:hover{background:var(--night2);color:var(--night-ink)}
+.meal table td{padding:7px 10px}
+.meal table input{padding:5px 7px;min-width:64px}.meal table td:nth-child(2) input{min-width:120px}
+.add-row{display:grid;grid-template-columns:1fr 90px 150px auto;gap:8px;padding:12px 16px;border-top:1px dashed var(--line)}
+.tag{font-size:9px;padding:2px 7px;border-radius:2px;font-weight:600;white-space:nowrap;letter-spacing:.08em;text-transform:uppercase}
+.score-q{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.seg label{cursor:pointer}
+.seg input{display:none}
+.seg span{display:block;padding:6px 11px;font-size:11px;border-left:1px solid var(--line)}
+.seg label:first-child span{border-left:0}
+.seg input:checked+span{background:var(--ink);color:var(--bg)}
+.timeline{border-left:1px solid var(--line);margin-left:8px;padding-left:22px}
+.tl{position:relative;padding-bottom:20px}
+.tl:before{content:"";position:absolute;left:-28px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--surface);border:1px solid var(--brand)}
+.tl.marco:before{background:var(--gold);border-color:var(--gold)}
+.alert{display:flex;gap:10px;padding:11px 14px;border-radius:2px;background:var(--surface2);margin-bottom:8px;font-size:13px;align-items:flex-start;border-left:2px solid var(--line)}
+.alert.warn{background:var(--gold-soft);border-left-color:var(--gold)}.alert.bad{background:var(--danger-soft);border-left-color:var(--danger)}.alert.good{background:var(--sage-soft);border-left-color:var(--sage)}
+.modal{position:fixed;inset:0;background:rgba(15,12,9,.6);display:grid;place-items:center;z-index:50;padding:16px;backdrop-filter:blur(3px)}
+.modal.hidden{display:none}
+.modal-box{background:var(--surface);border-radius:var(--r);width:min(740px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.modal-head{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-head h2{font-size:24px}
+.modal-body{padding:22px 26px}
+.modal-foot{padding:16px 26px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--surface)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--night);color:var(--night-ink);padding:12px 20px;border-radius:2px;border-left:2px solid var(--gold);transition:.25s;z-index:60;font-weight:500;opacity:0;font-size:13px}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.phase-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.hero-success{background:var(--night);border-color:var(--night);color:var(--night-ink)}
+.hero-success .l{color:var(--night-muted)}.hero-success .s{color:var(--gold)}.hero-success .v{color:var(--night-ink)}
+.lab-flag{font-weight:600}
+.lab-flag.lo,.lab-flag.hi{color:var(--danger)}
+.lab-flag.ok{color:var(--sage)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.wday{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px;min-height:160px}
+.wday.today{border-color:var(--gold);box-shadow:inset 0 2px 0 var(--gold)}
+.wday h4{margin:0 0 10px;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.appt{background:var(--night);color:var(--night-ink);border-left:2px solid var(--gold);border-radius:2px;padding:7px 9px;font-size:11.5px;margin-bottom:6px;cursor:pointer}
+.appt.done{background:var(--sage-soft);color:var(--ink);border-left-color:var(--sage)}.appt.miss{background:var(--surface2);text-decoration:line-through;color:var(--muted);border-left-color:var(--line)}
+.appt b{display:block;font-weight:600}
+canvas{max-width:100%}
+/* hero do painel */
+.hero{background:radial-gradient(120% 140% at 100% 0%,rgba(184,146,90,.22),transparent 55%),var(--night);color:var(--night-ink);border-radius:var(--r);padding:40px 40px 0;margin-bottom:22px;overflow:hidden}
+.hero h1{font-size:44px;color:var(--night-ink)}
+.hero h1 em{color:var(--gold)}
+.hero p{color:var(--night-muted);margin:10px 0 0}
+.hero .btn{border-color:var(--night-ink);color:var(--night-ink)}
+.hero .btn:hover{background:var(--night-ink);color:var(--night)}
+.hero .btn.gold{border-color:var(--gold);color:#15120F}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:34px;border-top:1px solid var(--night-line)}
+.hero-stat{display:flex;gap:14px;align-items:center;padding:22px 20px 26px;border-left:1px solid var(--night-line)}
+.hero-stat:first-child{border-left:0;padding-left:0}
+.hero-stat .ic{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);flex:none}
+.hero-stat .ic svg{width:18px;height:18px}
+.hero-stat .v{font-family:var(--serif);font-size:28px;line-height:1.05}
+.hero-stat .l{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--night-muted);font-weight:600}
+.hero-stat .s{font-size:11.5px;color:var(--gold)}
+/* depoimentos */
+.quotes{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:12px;cursor:pointer}
+.quote:hover{border-color:var(--gold)}
+.stars{color:var(--gold);letter-spacing:.2em;font-size:13px}
+.quote blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.5}
+.section-head{text-align:center;margin:40px 0 22px}
+.section-head h2{font-size:28px}
+@media (max-width:1100px){.hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-stat:nth-child(3){border-left:0;padding-left:0}}
+@media (max-width:1000px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr}.week{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr}
+  .side{position:sticky;height:auto;flex-direction:row;overflow-x:auto;padding:8px 10px;z-index:20}
+  .logo,.side-foot{display:none}
+  .nav{width:auto;white-space:nowrap;padding:9px 10px;border-left:0;border-bottom:2px solid transparent}
+  .nav.on{border-bottom-color:var(--gold)}
+  #nav{display:flex;gap:2px}
+  main{padding:20px 16px 60px}
+  h1{font-size:28px}.hero{padding:26px 20px 0}.hero h1{font-size:32px}
+  .hero-stats{grid-template-columns:1fr}.hero-stat{border-left:0;padding-left:0;border-top:1px solid var(--night-line)}
+  .g2,.form{grid-template-columns:1fr}
+  .add-row{grid-template-columns:1fr 1fr}
+  .week{grid-template-columns:1fr}
+}
+#print{display:none}
+@media print{
+  body{background:#fff;color:#1A1714}
+  .app,.modal,#toast{display:none!important}
+  #print{display:block;font:12px/1.55 Inter,sans-serif}
+  #print h1{font-family:'Playfair Display',Georgia,serif;font-weight:500;font-size:24px;letter-spacing:.2em;text-transform:uppercase}
+  #print .ph{display:flex;justify-content:space-between;border-bottom:1px solid #B8925A;padding-bottom:12px;margin-bottom:18px}
+  #print .pm{margin-bottom:16px;break-inside:avoid}
+  #print .pm h3{font-family:'Playfair Display',Georgia,serif;font-weight:500;font-size:16px;border-bottom:1px solid #E2D8CA;padding:0 0 4px;margin-bottom:6px;color:#1A1714}
+  #print ul{margin:0;padding-left:20px}
+  #print .pf{margin-top:28px;border-top:1px solid #E2D8CA;padding-top:8px;color:#7B7166;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo">
+      <div class="logo-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 21v-8"/><path d="M12 13c0-4 3-7 7-7 0 4-3 7-7 7z"/><path d="M12 15c0-3.3-2.7-6-6-6 0 3.3 2.7 6 6 6z"/></svg></div>
+      <div><b id="brand-name">Florescer</b><small id="brand-sub">Nutrição Fértil</small></div>
+    </div>
+    <div id="nav"></div>
+    <div class="side-foot">Os dados ficam salvos neste navegador.<br>Faça backup em Configurações.</div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()"><div class="modal-box" id="modal-box"></div></div>
+<div id="print"></div>
+<div id="toast"></div>
+
+<script>
+/* ============ ÍCONES ============ */
+const I={
+ dash:'<path d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"/>',
+ pac:'<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5.5"/>',
+ agenda:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ proto:'<path d="M12 21v-8"/><path d="M12 13c0-4 3-7 7-7 0 4-3 7-7 7z"/><path d="M12 15c0-3.3-2.7-6-6-6 0 3.3 2.7 6 6 6z"/>',
+ food:'<path d="M12 3c-4 0-7 3-7 8 0 6 4 10 7 10s7-4 7-10c0-5-3-8-7-8z"/><path d="M12 3c0-1 1-2 2-2"/>',
+ cfg:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'
+};
+const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+
+/* ============ BASE DE ALIMENTOS (por 100 g, valores aproximados TACO/USDA) ============ */
+const FOODS=[
+['arr_int','Arroz integral cozido','Cereais e tubérculos',124,25.8,2.6,1.0,2.7,'baixoig'],
+['arr_br','Arroz branco cozido','Cereais e tubérculos',128,28.1,2.5,0.2,1.6,''],
+['aveia','Aveia em flocos','Cereais e tubérculos',394,66.6,13.9,8.5,9.1,'baixoig zinco'],
+['quinoa','Quinoa cozida','Cereais e tubérculos',120,21.3,4.4,1.9,2.8,'baixoig folato'],
+['bdoce','Batata-doce cozida','Cereais e tubérculos',77,18.4,0.6,0.1,2.2,''],
+['mandioca','Mandioca cozida','Cereais e tubérculos',125,30.1,0.6,0.3,1.6,''],
+['batata','Batata inglesa cozida','Cereais e tubérculos',52,11.9,1.2,0.0,1.3,''],
+['pao_int','Pão integral','Cereais e tubérculos',253,49.9,9.4,3.7,6.9,''],
+['tapioca','Tapioca (goma hidratada)','Cereais e tubérculos',242,60.0,0.1,0.1,0.6,''],
+['cuscuz','Cuscuz de milho cozido','Cereais e tubérculos',113,25.3,2.2,0.7,2.1,''],
+['macarrao_int','Macarrão integral cozido','Cereais e tubérculos',124,26.0,5.0,0.6,3.0,'baixoig'],
+['fe_car','Feijão carioca cozido','Leguminosas',76,13.6,4.8,0.5,8.5,'folato ferro baixoig'],
+['fe_pre','Feijão preto cozido','Leguminosas',77,14.0,4.5,0.5,8.4,'folato ferro baixoig antiox'],
+['lentilha','Lentilha cozida','Leguminosas',93,16.3,6.3,0.5,7.9,'folato ferro baixoig'],
+['grao','Grão-de-bico cozido','Leguminosas',164,27.4,8.9,2.6,7.6,'folato zinco baixoig'],
+['tofu','Tofu','Leguminosas',76,1.9,8.0,4.2,0.3,''],
+['ovo','Ovo de galinha cozido','Proteínas',146,0.6,13.3,9.5,0,'colina selenio vitd'],
+['frango','Peito de frango grelhado','Proteínas',159,0,32.0,2.5,0,''],
+['sardinha','Sardinha assada','Proteínas',164,0,32.2,3.0,0,'omega3 selenio vitd'],
+['salmao','Salmão grelhado','Proteínas',229,0,23.9,14.0,0,'omega3 selenio vitd'],
+['tilapia','Tilápia grelhada','Proteínas',128,0,26.0,2.7,0,'selenio'],
+['patinho','Carne bovina (patinho) grelhada','Proteínas',219,0,35.9,7.3,0,'ferro zinco'],
+['figado','Fígado bovino grelhado','Proteínas',225,4.2,29.9,9.0,0,'ferro folato colina zinco'],
+['atum','Atum em água','Proteínas',117,0,26.0,0.8,0,'selenio omega3'],
+['iog_nat','Iogurte natural integral','Laticínios',51,1.9,4.1,3.0,0,''],
+['leite','Leite integral','Laticínios',61,4.7,3.1,3.3,0,''],
+['minas','Queijo minas frescal','Laticínios',264,3.2,17.4,20.2,0,''],
+['kefir','Kefir','Laticínios',60,4.5,3.4,3.3,0,''],
+['ricota','Ricota','Laticínios',140,3.8,12.6,8.1,0,''],
+['azeite','Azeite de oliva extravirgem','Gorduras e oleaginosas',884,0,0,100,0,'antiox'],
+['abacate','Abacate','Gorduras e oleaginosas',96,6.0,1.2,8.4,6.3,'folato'],
+['cpara','Castanha-do-pará','Gorduras e oleaginosas',643,15.1,14.5,63.5,7.9,'selenio'],
+['ccaju','Castanha de caju','Gorduras e oleaginosas',570,29.1,18.5,46.3,3.7,'zinco'],
+['nozes','Nozes','Gorduras e oleaginosas',620,18.4,14.0,59.4,7.2,'omega3 antiox'],
+['amendoas','Amêndoas','Gorduras e oleaginosas',581,29.5,18.6,47.3,11.6,''],
+['chia','Semente de chia','Gorduras e oleaginosas',486,42.0,16.5,30.7,34.4,'omega3'],
+['linhaca','Linhaça','Gorduras e oleaginosas',495,43.3,14.1,32.3,33.5,'omega3'],
+['abobora_sem','Semente de abóbora','Gorduras e oleaginosas',559,10.7,30.2,49.0,6.0,'zinco ferro'],
+['pasta_amend','Pasta de amendoim integral','Gorduras e oleaginosas',588,20.0,25.0,50.0,6.0,''],
+['banana','Banana-prata','Frutas',98,26.0,1.3,0.1,2.0,''],
+['maca','Maçã','Frutas',56,15.2,0.3,0,1.3,''],
+['mamao','Mamão papaia','Frutas',40,10.4,0.5,0.1,1.0,'folato'],
+['morango','Morango','Frutas',30,6.8,0.9,0.3,1.7,'antiox folato'],
+['mirtilo','Mirtilo (blueberry)','Frutas',57,14.5,0.7,0.3,2.4,'antiox'],
+['laranja','Laranja-pera','Frutas',37,8.9,1.0,0.1,0.8,'folato antiox'],
+['kiwi','Kiwi','Frutas',51,11.5,1.3,0.6,2.7,'antiox'],
+['abacaxi','Abacaxi','Frutas',48,12.3,0.9,0.1,1.0,''],
+['manga','Manga','Frutas',64,16.7,0.4,0.3,1.6,''],
+['roma','Romã','Frutas',83,18.7,1.7,1.2,4.0,'antiox'],
+['acai','Açaí (polpa sem açúcar)','Frutas',58,6.2,0.8,3.9,2.6,'antiox'],
+['goiaba','Goiaba vermelha','Frutas',54,13.0,1.1,0.4,6.2,'antiox'],
+['brocolis','Brócolis cozido','Vegetais',25,4.4,2.1,0.5,3.4,'folato antiox'],
+['espinafre','Espinafre cru','Vegetais',16,2.6,2.0,0.2,2.1,'folato ferro'],
+['couve_ref','Couve-manteiga refogada','Vegetais',90,8.7,1.7,6.6,5.7,'folato'],
+['couve','Couve-manteiga crua','Vegetais',27,4.3,2.9,0.5,3.1,'folato antiox'],
+['cenoura','Cenoura crua','Vegetais',34,7.7,1.3,0.2,3.2,'antiox'],
+['beterraba','Beterraba crua','Vegetais',49,11.1,1.9,0.1,3.4,'folato'],
+['abobora','Abóbora cabotiá cozida','Vegetais',48,10.8,1.4,0.7,2.5,'antiox'],
+['tomate','Tomate','Vegetais',15,3.1,1.1,0.2,1.2,'antiox'],
+['alface','Alface','Vegetais',11,1.7,1.3,0.2,1.8,'folato'],
+['rucula','Rúcula','Vegetais',13,2.2,1.8,0.1,1.7,'folato'],
+['abobrinha','Abobrinha cozida','Vegetais',15,3.0,1.1,0.2,1.6,''],
+['pepino','Pepino','Vegetais',10,2.0,0.9,0,1.1,''],
+['aspargo','Aspargos','Vegetais',20,3.9,2.2,0.1,2.1,'folato'],
+['choc70','Chocolate 70% cacau','Outros',598,45.9,7.8,42.6,10.9,'antiox'],
+['mel','Mel','Outros',309,84.0,0,0,0,''],
+['agua_coco','Água de coco','Outros',22,5.3,0,0,0,'']
+].map(([id,nome,grupo,kcal,c,p,g,f,tags])=>({id,nome,grupo,kcal,c,p,g,f,tags:tags?tags.split(' '):[]}));
+
+const TAGS={folato:['Folato','sage'],omega3:['Ômega-3','blue'],antiox:['Antioxidantes','brand'],ferro:['Ferro','danger'],zinco:['Zinco','gold'],selenio:['Selênio','gold'],colina:['Colina','brand'],baixoig:['Baixo IG','sage'],vitd:['Vitamina D','gold']};
+const tagHtml=t=>TAGS[t]?`<span class="tag b-${TAGS[t][1]}">${TAGS[t][0]}</span>`:'';
+
+/* ============ EXAMES (faixas-alvo orientativas) ============ */
+const LABS=[
+ {k:'amh',n:'AMH (antimülleriano)',u:'ng/mL',min:1.0,max:4.0,g:'Reserva ovariana'},
+ {k:'fsh',n:'FSH (3º dia)',u:'mUI/mL',min:3,max:10,g:'Reserva ovariana'},
+ {k:'lh',n:'LH (3º dia)',u:'mUI/mL',min:2,max:10,g:'Hormônios'},
+ {k:'e2',n:'Estradiol (3º dia)',u:'pg/mL',min:25,max:80,g:'Hormônios'},
+ {k:'prog',n:'Progesterona (21º dia)',u:'ng/mL',min:10,max:null,g:'Hormônios'},
+ {k:'prl',n:'Prolactina',u:'ng/mL',min:4.8,max:23.3,g:'Hormônios'},
+ {k:'testo',n:'Testosterona total',u:'ng/dL',min:8,max:60,g:'Hormônios'},
+ {k:'tsh',n:'TSH',u:'mUI/L',min:0.5,max:2.5,g:'Tireoide'},
+ {k:'t4l',n:'T4 livre',u:'ng/dL',min:0.9,max:1.8,g:'Tireoide'},
+ {k:'antitpo',n:'Anti-TPO',u:'UI/mL',min:null,max:35,g:'Tireoide'},
+ {k:'glic',n:'Glicemia de jejum',u:'mg/dL',min:70,max:90,g:'Metabolismo'},
+ {k:'ins',n:'Insulina de jejum',u:'µUI/mL',min:2,max:8,g:'Metabolismo'},
+ {k:'homa',n:'HOMA-IR (calculado)',u:'',min:null,max:2.0,g:'Metabolismo',calc:true},
+ {k:'hba1c',n:'Hemoglobina glicada',u:'%',min:4,max:5.6,g:'Metabolismo'},
+ {k:'pcr',n:'PCR ultrassensível',u:'mg/L',min:null,max:1,g:'Inflamação'},
+ {k:'vitd',n:'Vitamina D (25-OH)',u:'ng/mL',min:40,max:80,g:'Micronutrientes'},
+ {k:'ferr',n:'Ferritina',u:'ng/mL',min:40,max:150,g:'Micronutrientes'},
+ {k:'b12',n:'Vitamina B12',u:'pg/mL',min:500,max:1000,g:'Micronutrientes'},
+ {k:'fol',n:'Folato sérico',u:'ng/mL',min:5.4,max:null,g:'Micronutrientes'},
+ {k:'hcy',n:'Homocisteína',u:'µmol/L',min:null,max:8,g:'Micronutrientes'},
+ {k:'zn',n:'Zinco',u:'µg/dL',min:80,max:120,g:'Micronutrientes'},
+ {k:'sp_conc',n:'Concentração espermática',u:'mi/mL',min:16,max:null,g:'Parceiro · espermograma'},
+ {k:'sp_mot',n:'Motilidade progressiva',u:'%',min:30,max:null,g:'Parceiro · espermograma'},
+ {k:'sp_morf',n:'Morfologia normal (Kruger)',u:'%',min:4,max:null,g:'Parceiro · espermograma'},
+ {k:'sp_vol',n:'Volume seminal',u:'mL',min:1.4,max:null,g:'Parceiro · espermograma'},
+ {k:'sp_dna',n:'Fragmentação de DNA',u:'%',min:null,max:25,g:'Parceiro · espermograma'},
+ {k:'p_vitd',n:'Vitamina D (parceiro)',u:'ng/mL',min:30,max:80,g:'Parceiro · espermograma'}
+];
+function labFlag(l,v){if(v===''||v==null||isNaN(v))return '';if(l.min!=null&&v<l.min)return 'lo';if(l.max!=null&&v>l.max)return 'hi';return 'ok'}
+const labRef=l=>l.min!=null&&l.max!=null?`${l.min}–${l.max}`:l.min!=null?`≥ ${l.min}`:`≤ ${l.max}`;
+
+/* ============ PONTUAÇÃO FÉRTIL ============ */
+const SCORE=[
+ 'Evita gorduras trans, frituras e margarinas',
+ 'Inclui proteína vegetal (feijões, lentilha, grão-de-bico) diariamente',
+ 'Prefere carboidratos integrais e de baixo índice glicêmico',
+ 'Consome 5 ou mais porções de frutas e vegetais por dia',
+ 'Come peixes ou fontes de ômega-3 ao menos 2x por semana',
+ 'Usa azeite e gorduras boas como base da alimentação',
+ 'Evita ultraprocessados e açúcar adicionado',
+ 'Álcool ausente ou muito raro',
+ 'Cafeína até ~200 mg/dia (cerca de 2 xícaras)',
+ 'Dorme 7 horas ou mais por noite',
+ 'Pratica atividade física moderada com regularidade',
+ 'Hidratação adequada ao longo do dia',
+ 'Toma a suplementação prescrita com regularidade',
+ 'Tem estratégias de manejo do estresse (respiração, terapia, lazer)'
+];
+
+/* ============ ANAMNESE ============ */
+const ANAMNESE=[
+ {s:'História reprodutiva',f:[
+  {k:'tentando',l:'Tentando engravidar há (meses)',t:'number'},
+  {k:'gestacoes',l:'Gestações anteriores',t:'number'},
+  {k:'abortos',l:'Perdas gestacionais',t:'number'},
+  {k:'filhos',l:'Filhos',t:'number'},
+  {k:'diagnosticos',l:'Diagnósticos',t:'checks',w:'full',o:['SOP','Endometriose','Baixa reserva ovariana','Hipotireoidismo / Hashimoto','Resistência à insulina','Miomas','Fator tubário','Fator masculino','Infertilidade sem causa aparente','Abortamento de repetição','Trombofilia']},
+  {k:'tratamentos',l:'Tratamentos já realizados',t:'checks',w:'full',o:['Coito programado','Indução de ovulação','Inseminação (IIU)','FIV','Transferência de embrião congelado','Ovodoação']},
+  {k:'fivs',l:'Nº de FIVs',t:'number'},
+  {k:'medico',l:'Médico(a) / clínica de reprodução',t:'text'},
+  {k:'historia',l:'Detalhes da história do casal',t:'textarea',w:'full'}
+ ]},
+ {s:'Ciclo e sintomas',f:[
+  {k:'regularidade',l:'Ciclo',t:'select',o:['','Regular','Irregular','Ausente (amenorreia)','Usa anticoncepcional']},
+  {k:'fluxo',l:'Fluxo',t:'select',o:['','Leve','Moderado','Intenso','Com coágulos']},
+  {k:'sintomas',l:'Sintomas presentes',t:'checks',w:'full',o:['TPM intensa','Cólica forte','Acne','Queda de cabelo','Pelos em excesso','Inchaço/retenção','Fadiga','Intestino preso','Gases/distensão','Ansiedade','Insônia','Baixa libido','Escape (spotting)','Pouco muco fértil']}
+ ]},
+ {s:'Estilo de vida',f:[
+  {k:'sono',l:'Horas de sono',t:'number'},
+  {k:'atividade',l:'Atividade física',t:'select',o:['','Sedentária','Leve (1–2x/sem)','Moderada (3–4x/sem)','Intensa (5x+/sem)']},
+  {k:'estresse',l:'Nível de estresse (0–10)',t:'number'},
+  {k:'agua',l:'Água (litros/dia)',t:'number'},
+  {k:'cafe',l:'Café (xícaras/dia)',t:'number'},
+  {k:'alcool',l:'Álcool',t:'select',o:['','Não consome','Raramente','Fim de semana','Frequente']},
+  {k:'tabaco',l:'Tabagismo',t:'select',o:['','Não','Sim','Ex-fumante']},
+  {k:'intestino',l:'Hábito intestinal',t:'select',o:['','Diário','A cada 2 dias','3 dias ou mais','Irregular']}
+ ]},
+ {s:'Alimentação',f:[
+  {k:'rotina',l:'Rotina alimentar / recordatório 24h',t:'textarea',r:5,w:'full'},
+  {k:'preferencias',l:'Preferências',t:'textarea'},
+  {k:'aversoes',l:'Aversões, intolerâncias e alergias',t:'textarea'},
+  {k:'medicamentos',l:'Medicamentos e suplementos em uso',t:'textarea',w:'full'}
+ ]},
+ {s:'Parceiro',f:[
+  {k:'pIdade',l:'Idade',t:'number'},
+  {k:'pPeso',l:'Peso (kg)',t:'number'},
+  {k:'pAltura',l:'Altura (cm)',t:'number'},
+  {k:'pAtividade',l:'Atividade física',t:'select',o:['','Sedentário','Leve','Moderada','Intensa']},
+  {k:'pHabitos',l:'Hábitos (álcool, tabaco, calor, notebook no colo, ciclismo...)',t:'textarea',w:'full'},
+  {k:'pObs',l:'Diagnósticos e observações',t:'textarea',w:'full'}
+ ]}
+];
+
+const STATUS=['Avaliação inicial','Em protocolo','Tentando ativamente','Em tratamento (FIV/IIU)','Gestante','Pausada','Alta'];
+const statusBadge=s=>{const m={'Gestante':'b-gold','Em protocolo':'b-sage','Tentando ativamente':'b-brand','Em tratamento (FIV/IIU)':'b-blue','Avaliação inicial':'','Pausada':'','Alta':''};return `<span class="badge ${m[s]||''}">${s==='Gestante'?'✦ ':''}${esc(s)}</span>`};
+const SUPLEMENTOS=['Metilfolato','Ômega-3 (EPA/DHA)','Vitamina D3','Coenzima Q10','Mio-inositol','N-acetilcisteína (NAC)','Vitamina B12 (metilcobalamina)','Magnésio','Ferro quelato','Zinco','Selênio','Probiótico','Vitamina E','L-carnitina (parceiro)'];
+
+/* ============ UTILITÁRIOS ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10)};
+const today=()=>iso(new Date());
+const pd=s=>new Date(s+'T12:00:00');
+const addDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return iso(d)};
+const diffDays=(a,b)=>Math.round((pd(b)-pd(a))/864e5);
+const fd=s=>s?s.split('-').reverse().join('/'):'—';
+const fdShort=s=>s?pd(s).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.',''):'';
+const age=b=>{if(!b)return '';const d=pd(b),n=new Date();let a=n.getFullYear()-d.getFullYear();if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate()))a--;return a};
+const n1=v=>v===''||v==null||isNaN(v)?'—':(+v).toLocaleString('pt-BR',{maximumFractionDigits:1});
+const n0=v=>v===''||v==null||isNaN(v)?'—':Math.round(v).toLocaleString('pt-BR');
+const brl=v=>(+v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const last=a=>a&&a.length?a[a.length-1]:null;
+const byDate=(a,k='data')=>[...(a||[])].sort((x,y)=>(x[k]||'').localeCompare(y[k]||''));
+const initials=n=>(n||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const imc=(p,h)=>p&&h?p/((h/100)**2):null;
+const imcClass=v=>v==null?'':v<18.5?'Baixo peso':v<25?'Eutrofia':v<30?'Sobrepeso':v<35?'Obesidade I':v<40?'Obesidade II':'Obesidade III';
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ============ ESTADO ============ */
+const KEY='florescer_v1';
+function defaultState(){return{
+ settings:{clinica:'Florescer',subtitulo:'Nutrição Fértil',nutri:'Nome da Nutricionista',crn:'CRN-0 00000',telefone:'',instagram:'',metodo:'Método Florescer'},
+ protocolo:[
+  {id:'f1',nome:'Fase 1 · Desinflamar',semanas:4,cor:'#A8834F',objetivo:'Reduzir inflamação, ajustar intestino e estabilizar a glicemia.',orientacoes:'Retirar ultraprocessados, priorizar comida de verdade, iniciar suplementação base.'},
+  {id:'f2',nome:'Fase 2 · Nutrir',semanas:8,cor:'#6E7B5C',objetivo:'Repor micronutrientes-chave para qualidade de óvulos e espermatozoides.',orientacoes:'Densidade nutricional: folato, ômega-3, antioxidantes, zinco e selênio.'},
+  {id:'f3',nome:'Fase 3 · Preparar a concepção',semanas:12,cor:'#3B342C',objetivo:'Manter o terreno ideal durante as tentativas ou o tratamento.',orientacoes:'Ajustes finos por ciclo, apoio à fase lútea, acompanhamento próximo.'},
+  {id:'f4',nome:'Fase 4 · Gestação',semanas:40,cor:'#B8925A',objetivo:'Nutrição para uma gestação saudável.',orientacoes:'Transição para o acompanhamento gestacional.'}
+ ],
+ pacientes:[],agenda:[],alimentosCustom:[],seeded:false
+}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.pacientes){const old={'#C98B73':'#A8834F','#5F8370':'#6E7B5C','#B8913F':'#3B342C','#4A7FA7':'#B8925A'};(s.protocolo||[]).forEach(f=>{if(old[f.cor])f.cor=old[f.cor]});return Object.assign(defaultState(),s)}}catch(e){}return defaultState()}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador')}}
+const UI={view:'dash',pid:null,tab:'resumo',planId:null,week:0,q:'',st:'',fq:'',fg:''};
+const P=id=>S.pacientes.find(p=>p.id===id);
+const phase=id=>S.protocolo.find(f=>f.id===id);
+const allFoods=()=>FOODS.concat(S.alimentosCustom||[]);
+const food=id=>allFoods().find(f=>f.id===id);
+
+/* ============ FORMULÁRIOS ============ */
+function F(f,v){
+ const val=v??'';let inp;
+ if(f.t==='checks')return `<div class="field ${f.w||''}"><span>${f.l}</span><div class="checks">${f.o.map(o=>`<label class="chk"><input type="checkbox" name="${f.k}" value="${esc(o)}" data-multi ${Array.isArray(v)&&v.includes(o)?'checked':''}><span>${esc(o)}</span></label>`).join('')}</div></div>`;
+ if(f.t==='textarea')inp=`<textarea name="${f.k}" rows="${f.r||3}" placeholder="${esc(f.ph||'')}">${esc(val)}</textarea>`;
+ else if(f.t==='select')inp=`<select name="${f.k}">${f.o.map(o=>{const[ov,ol]=Array.isArray(o)?o:[o,o];return `<option value="${esc(ov)}" ${ov==val?'selected':''}>${esc(ol)}</option>`}).join('')}</select>`;
+ else inp=`<input name="${f.k}" type="${f.t||'text'}" value="${esc(val)}" placeholder="${esc(f.ph||'')}" ${f.t==='number'?'step="any"':''}>`;
+ return `<label class="field ${f.w||''}"><span>${f.l}</span>${inp}</label>`;
+}
+function readForm(el){const o={};el.querySelectorAll('[name]').forEach(i=>{
+ if(i.dataset.multi!==undefined){o[i.name]=o[i.name]||[];if(i.checked)o[i.name].push(i.value)}
+ else if(i.type==='checkbox')o[i.name]=i.checked;
+ else if(i.type==='radio'){if(i.checked)o[i.name]=i.value}
+ else if(i.type==='number')o[i.name]=i.value===''?'':+i.value;
+ else o[i.name]=i.value});return o}
+let _onSave=null;
+function openModal(title,body,onSave,saveLabel='Salvar'){
+ _onSave=onSave;
+ $('#modal-box').innerHTML=`<div class="modal-head"><h2>${title}</h2><button class="btn ghost" onclick="closeModal()" aria-label="Fechar">✕</button></div>
+ <form class="modal-body" id="mform" onsubmit="event.preventDefault();modalSave()">${body}</form>
+ ${onSave?`<div class="modal-foot"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn pri" onclick="modalSave()">${saveLabel}</button></div>`:''}`;
+ $('#modal').classList.remove('hidden');
+ setTimeout(()=>{const f=$('#mform input,#mform select,#mform textarea');f&&f.focus()},30);
+}
+function modalSave(){if(!_onSave)return;const r=_onSave(readForm($('#mform')));if(r!==false){closeModal();save();render()}}
+function closeModal(){$('#modal').classList.add('hidden');_onSave=null}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* ============ NAVEGAÇÃO ============ */
+const NAV=[['dash','Painel'],['pac','Pacientes'],['agenda','Agenda'],['proto','Meu Método'],['food','Alimentos'],['cfg','Configurações']];
+function go(view,pid,tab){UI.view=view;if(pid!==undefined)UI.pid=pid;if(tab)UI.tab=tab;if(view==='pac'&&!pid)UI.pid=null;window.scrollTo(0,0);render()}
+let charts=[],pend=[];
+function chart(id,cfg){pend.push([id,cfg])}
+function render(){
+ charts.forEach(c=>c.destroy());charts=[];pend=[];
+ $('#brand-name').textContent=S.settings.clinica||'Florescer';
+ $('#brand-sub').textContent=S.settings.subtitulo||'';
+ $('#nav').innerHTML=NAV.map(([k,l])=>`<button class="nav ${UI.view===k?'on':''}" onclick="go('${k}')">${ico(k)}<span>${l}</span></button>`).join('');
+ const v={dash:vDash,pac:()=>UI.pid&&P(UI.pid)?vPaciente(P(UI.pid)):vPacientes(),agenda:vAgenda,proto:vProto,food:vFoods,cfg:vCfg}[UI.view];
+ $('#main').innerHTML=v();
+ if($('#enf'))liveE();
+ if(window.Chart){Chart.defaults.font.family='Inter, system-ui, sans-serif';Chart.defaults.color=css('--muted');Chart.defaults.borderColor=css('--line');
+  pend.forEach(([id,cfg])=>{const c=document.getElementById(id);if(c)charts.push(new Chart(c,cfg))})}
+}
+
+/* ============ DERIVADOS ============ */
+function cycleInfo(p,ref=today()){
+ const c=p.ciclo||{};const starts=byDate((c.registros||[]).map(r=>({data:r.inicio}))).map(r=>r.data);
+ let len=+c.duracao||28;
+ if(starts.length>=2){const ds=[];for(let i=1;i<starts.length;i++){const d=diffDays(starts[i-1],starts[i]);if(d>15&&d<60)ds.push(d)}if(ds.length)len=Math.round(ds.reduce((a,b)=>a+b,0)/ds.length)}
+ const dum=last(starts)||c.dum;if(!dum)return null;
+ let start=dum;const elapsed=diffDays(start,ref);
+ if(elapsed>=len&&elapsed<len*3){start=addDays(start,Math.floor(elapsed/len)*len)}
+ const day=diffDays(start,ref)+1;const ov=len-14;const men=+c.menstruacao||5;
+ return{start,len,day,ov,men,fertStart:ov-5,fertEnd:ov+1,next:addDays(start,len),ovDate:addDays(start,ov-1),fertDate:addDays(start,ov-6),late:elapsed>=len*3}
+}
+function weeksIn(p){return p.inicio?Math.max(0,Math.floor(diffDays(p.inicio,today())/7)):0}
+function phaseProgress(p){const f=phase(p.fase);if(!f||!p.faseInicio)return null;const w=Math.floor(diffDays(p.faseInicio,today())/7);return{w,tot:f.semanas,pct:Math.min(100,Math.round(w/f.semanas*100))}}
+function lastExam(p){return last(byDate(p.exames))}
+function examVal(e,k){if(!e)return '';if(k==='homa'){const g=e.v.glic,i=e.v.ins;return g&&i?+(g*i/405).toFixed(2):''}return e.v[k]}
+function scorePct(r){if(!r)return null;const v=Object.values(r.resp||{}).map(Number);return Math.round(v.reduce((a,b)=>a+b,0)/(SCORE.length*2)*100)}
+function lastAppt(pid){return byDate(S.agenda.filter(a=>a.pid===pid&&a.data<=today()&&a.status!=='Faltou')).pop()}
+function nextAppt(pid){return byDate(S.agenda.filter(a=>a.pid===pid&&a.data>=today()&&a.status==='Agendada')).shift()}
+function planTotals(pl){const t={kcal:0,c:0,p:0,g:0,f:0,tags:{}};(pl.refeicoes||[]).forEach(m=>m.itens.forEach(it=>{const f=food(it.f);if(!f)return;const k=(+it.g||0)/100;t.kcal+=f.kcal*k;t.c+=f.c*k;t.p+=f.p*k;t.g+=f.g*k;t.f+=f.f*k;f.tags.forEach(x=>t.tags[x]=(t.tags[x]||0)+1)}));return t}
+function mealTotals(m){const t={kcal:0,c:0,p:0,g:0};m.itens.forEach(it=>{const f=food(it.f);if(!f)return;const k=(+it.g||0)/100;t.kcal+=f.kcal*k;t.c+=f.c*k;t.p+=f.p*k;t.g+=f.g*k});return t}
+function labAlerts(p){const e=lastExam(p);if(!e)return[];return LABS.map(l=>({l,v:examVal(e,l.k)})).filter(x=>{const f=labFlag(x.l,x.v);return f==='lo'||f==='hi'})}
+
+/* ============ PAINEL ============ */
+function vDash(){
+ const ps=S.pacientes;const ativos=ps.filter(p=>!['Alta','Pausada'].includes(p.status));
+ const gest=ps.filter(p=>p.status==='Gestante'||p.resultado);
+ const encerr=ps.filter(p=>p.status==='Gestante'||p.status==='Alta'||p.resultado);
+ const taxa=encerr.length?Math.round(gest.length/encerr.length*100):0;
+ const t=today();const mes=t.slice(0,7);
+ const receita=S.agenda.filter(a=>a.data.startsWith(mes)&&a.pago).reduce((s,a)=>s+(+a.valor||0),0);
+ const aReceber=S.agenda.filter(a=>a.data.startsWith(mes)&&!a.pago&&a.status!=='Faltou').reduce((s,a)=>s+(+a.valor||0),0);
+ const prox=byDate(S.agenda.filter(a=>a.data>=t&&a.data<=addDays(t,7)&&a.status==='Agendada'),'data').sort((a,b)=>(a.data+a.hora).localeCompare(b.data+b.hora));
+ const tempos=gest.filter(p=>p.resultado&&p.inicio).map(p=>diffDays(p.inicio,p.resultado.data)/30.4);
+ const tMed=tempos.length?tempos.reduce((a,b)=>a+b,0)/tempos.length:null;
+ // alertas
+ const al=[];
+ ativos.forEach(p=>{if(p.status==='Gestante')return;
+  const ci=cycleInfo(p);if(ci&&!ci.late&&ci.day>=ci.fertStart&&ci.day<=ci.fertEnd)al.push(['good',`<b>${esc(p.nome)}</b> está na janela fértil estimada (dia ${ci.day} do ciclo).`,p.id,'ciclo']);
+  const la=lastAppt(p.id);const nx=nextAppt(p.id);if(!nx&&(!la||diffDays(la.data,t)>30))al.push(['warn',`<b>${esc(p.nome)}</b> está sem retorno agendado${la?` (última consulta há ${diffDays(la.data,t)} dias)`:''}.`,p.id,'resumo']);
+  const lab=labAlerts(p);if(lab.length)al.push(['bad',`<b>${esc(p.nome)}</b> tem ${lab.length} exame(s) fora da faixa-alvo: ${lab.slice(0,3).map(x=>x.l.n.split(' (')[0]).join(', ')}${lab.length>3?'…':''}.`,p.id,'exames']);
+ });
+ const h=new Date().getHours();const saud=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+ const faseCount=S.protocolo.map(f=>ps.filter(p=>p.fase===f.id&&!['Alta'].includes(p.status)).length);
+ chart('ch-fases',{type:'bar',data:{labels:S.protocolo.map(f=>f.nome.split('·').pop().trim()),datasets:[{data:faseCount,backgroundColor:S.protocolo.map(f=>f.cor),borderRadius:2,maxBarThickness:46}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}},maintainAspectRatio:false}});
+ return `
+ <section class="hero">
+  <div class="row between" style="align-items:flex-end">
+   <div><span class="eyebrow" style="color:var(--gold)">${esc(S.settings.metodo)} · ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</span>
+   <h1>${saud}${S.settings.nutri.startsWith('Nome da')?'.':`, <em>${esc(S.settings.nutri.split(' ').slice(0,2).join(' '))}</em>.`}<br>Cuidando de <em>sonhos</em> em formação.</h1>
+   <p>Nutrição personalizada para casais que desejam engravidar.</p></div>
+   <div class="row"><button class="btn" onclick="formAppt()">+ Consulta</button><button class="btn gold" onclick="formPaciente()">+ Nova paciente →</button></div>
+  </div>
+  <div class="hero-stats">
+   <div class="hero-stat"><div class="ic">${ico('pac')}</div><div><div class="l">Em acompanhamento</div><div class="v">${ativos.length}</div><div class="s">${ps.length} pacientes no total</div></div></div>
+   <div class="hero-stat"><div class="ic">${ico('proto')}</div><div><div class="l">Gestações conquistadas</div><div class="v">${gest.length}</div><div class="s">${tMed?`média de ${n1(tMed)} meses de método`:'registre os positivos'}</div></div></div>
+   <div class="hero-stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div><div><div class="l">Taxa de sucesso</div><div class="v">${taxa}%</div><div class="s">das pacientes que concluíram</div></div></div>
+   <div class="hero-stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="1"/><path d="M3 10h18M7 15h3"/></svg></div><div><div class="l">Recebido no mês</div><div class="v">${brl(receita)}</div><div class="s">${aReceber?brl(aReceber)+' a receber':'tudo em dia'}</div></div></div>
+  </div>
+ </section>
+ <div class="grid g2">
+  <div class="card"><div class="row between"><div><span class="eyebrow">Agenda</span><h2>Próximos <em>7 dias</em></h2></div><button class="btn sm ghost" onclick="go('agenda')">Ver agenda →</button></div>
+   ${prox.length?prox.slice(0,7).map(a=>{const p=P(a.pid);return `<div class="list-item"><div style="width:62px"><b>${a.data===t?'Hoje':fdShort(a.data)}</b><div class="small muted">${a.hora||''}</div></div><div class="avatar sm">${initials(p?.nome)}</div><div style="flex:1;min-width:0"><b>${esc(p?.nome||'—')}</b><div class="small muted">${esc(a.tipo)} · ${esc(a.modalidade)}</div></div>${p?`<button class="btn sm" onclick="go('pac','${p.id}','resumo')">Abrir</button>`:''}</div>`}).join(''):'<div class="empty">Nenhuma consulta nos próximos 7 dias.</div>'}
+  </div>
+  <div class="card"><span class="eyebrow">Alertas clínicos</span><h2>Atenção <em>hoje</em></h2>
+   ${al.length?al.slice(0,8).map(([c,m,pid,tab])=>`<div class="alert ${c}" style="cursor:pointer" onclick="go('pac','${pid}','${tab}')"><span>${c==='good'?'🌱':c==='warn'?'⏰':'🔬'}</span><span>${m}</span></div>`).join(''):'<div class="empty">Tudo em ordem por aqui.</div>'}
+  </div>
+ </div>
+ <div class="card" style="margin-top:18px"><div class="row between"><div><span class="eyebrow">O método</span><h2>Pacientes por <em>fase</em></h2></div><button class="btn sm ghost" onclick="go('proto')">Ver fases →</button></div><div style="height:220px"><canvas id="ch-fases"></canvas></div></div>
+ <div class="section-head"><span class="eyebrow">Resultados reais</span><h2>Histórias que <em>transformam</em> vidas</h2></div>
+ ${gest.length?`<div class="quotes">${gest.map(p=>`<div class="quote" onclick="go('pac','${p.id}','resumo')"><div class="stars">★★★★★</div><blockquote>“${esc(p.resultado?.obs||'Gestação conquistada com o '+S.settings.metodo+'.')}”</blockquote>
+  <div class="row" style="flex-wrap:nowrap;margin-top:auto"><div class="avatar sm">${initials(p.nome)}</div><div><b>${esc(p.nome)}</b><div class="small muted">${(p.anamnese?.diagnosticos||[]).join(', ')||'—'}${p.anamnese?.tentando?` · tentava há ${p.anamnese.tentando} meses`:''}</div></div></div>
+  <div class="small" style="color:var(--brand);border-top:1px solid var(--line);padding-top:10px">${p.resultado?`Positivo em ${fd(p.resultado.data)}`:'Gestante'}${p.resultado&&p.inicio?` · ${n1(diffDays(p.inicio,p.resultado.data)/30.4)} meses de método`:''}</div></div>`).join('')}</div>`:'<div class="card empty">Quando uma paciente engravidar, registre na ficha dela para ver o depoimento aqui.</div>'}`;
+}
+
+/* ============ PACIENTES ============ */
+function vPacientes(){
+ const q=UI.q.toLowerCase();
+ const list=S.pacientes.filter(p=>(!q||p.nome.toLowerCase().includes(q)||(p.parceiro||'').toLowerCase().includes(q))&&(!UI.st||p.status===UI.st)).sort((a,b)=>a.nome.localeCompare(b.nome));
+ return `<div class="top"><div><span class="eyebrow">Carteira clínica</span><h1>Suas <em>pacientes</em></h1><p>${S.pacientes.length} cadastradas</p></div><button class="btn pri" onclick="formPaciente()">+ Nova paciente</button></div>
+ <div class="card">
+  <div class="row" style="margin-bottom:12px"><input style="max-width:320px" placeholder="Buscar por nome ou parceiro…" value="${esc(UI.q)}" oninput="UI.q=this.value;clearTimeout(window._qt);window._qt=setTimeout(()=>{render();const i=$('main input');i.focus();i.setSelectionRange(i.value.length,i.value.length)},250)">
+  <select style="max-width:220px" onchange="UI.st=this.value;render()"><option value="">Todos os status</option>${STATUS.map(s=>`<option ${UI.st===s?'selected':''}>${s}</option>`).join('')}</select></div>
+  ${list.length?`<div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Fase do método</th><th>Status</th><th>Tentando há</th><th>Diagnósticos</th><th>Próxima consulta</th></tr></thead><tbody>
+  ${list.map(p=>{const f=phase(p.fase);const nx=nextAppt(p.id);return `<tr class="click" onclick="go('pac','${p.id}','resumo')">
+   <td><div class="row" style="flex-wrap:nowrap"><div class="avatar sm">${initials(p.nome)}</div><div><b>${esc(p.nome)}</b><div class="small muted">${age(p.nascimento)?age(p.nascimento)+' anos':''}${p.parceiro?' · com '+esc(p.parceiro):''}</div></div></div></td>
+   <td>${f?`<span class="row" style="gap:6px;flex-wrap:nowrap"><i class="phase-dot" style="background:${f.cor}"></i>${esc(f.nome)}</span>`:'—'}</td>
+   <td>${statusBadge(p.status)}</td>
+   <td>${p.anamnese?.tentando?p.anamnese.tentando+' meses':'—'}</td>
+   <td class="small">${(p.anamnese?.diagnosticos||[]).slice(0,2).map(d=>`<span class="badge" style="margin:1px">${esc(d)}</span>`).join('')}</td>
+   <td>${nx?fd(nx.data)+' '+(nx.hora||''):'<span class="muted">—</span>'}</td></tr>`}).join('')}
+  </tbody></table></div>`:`<div class="empty">Nenhuma paciente encontrada.</div>`}
+ </div>`;
+}
+function formPaciente(id){
+ const p=id?P(id):{status:'Avaliação inicial',inicio:today(),fase:S.protocolo[0]?.id,anamnese:{}};
+ openModal(id?'Editar paciente':'Nova paciente',`<div class="form">
+  ${F({k:'nome',l:'Nome completo',w:'full'},p.nome)}
+  ${F({k:'nascimento',l:'Data de nascimento',t:'date'},p.nascimento)}
+  ${F({k:'telefone',l:'WhatsApp',ph:'(00) 00000-0000'},p.telefone)}
+  ${F({k:'email',l:'E-mail',t:'email'},p.email)}
+  ${F({k:'cidade',l:'Cidade'},p.cidade)}
+  ${F({k:'parceiro',l:'Nome do(a) parceiro(a)'},p.parceiro)}
+  ${F({k:'parceiroNasc',l:'Nascimento do(a) parceiro(a)',t:'date'},p.parceiroNasc)}
+  <div class="sec-title">Acompanhamento</div>
+  ${F({k:'inicio',l:'Início no método',t:'date'},p.inicio)}
+  ${F({k:'tentando',l:'Tentando engravidar há (meses)',t:'number'},p.anamnese?.tentando)}
+  ${F({k:'fase',l:'Fase do método',t:'select',o:S.protocolo.map(f=>[f.id,f.nome])},p.fase)}
+  ${F({k:'status',l:'Status',t:'select',o:STATUS},p.status)}
+  ${F({k:'origem',l:'Como chegou até você',t:'select',o:['','Instagram','Indicação de paciente','Indicação médica','Google','Outro']},p.origem)}
+  ${F({k:'objetivo',l:'Objetivo principal / o que ela espera',t:'textarea',w:'full'},p.objetivo)}
+ </div>`,d=>{
+  if(!d.nome.trim()){toast('Informe o nome');return false}
+  const {tentando,...rest}=d;
+  if(id){const faseMudou=p.fase!==d.fase;Object.assign(p,rest);p.anamnese=p.anamnese||{};p.anamnese.tentando=tentando;if(faseMudou)p.faseInicio=today()}
+  else{const np={id:uid(),...rest,faseInicio:d.inicio||today(),anamnese:{tentando},avaliacoes:[],exames:[],planos:[],suplementos:[],evolucao:[],scores:[],ciclo:{registros:[]}};S.pacientes.push(np);UI.view='pac';UI.pid=np.id;UI.tab='anamnese'}
+  toast('Paciente salva');
+ });
+}
+
+const TABS=[['resumo','Resumo'],['anamnese','Anamnese'],['ciclo','Ciclo'],['antropo','Avaliação física'],['exames','Exames'],['energia','Gasto energético'],['plano','Plano alimentar'],['supl','Suplementação'],['score','Pontuação fértil'],['evol','Evolução']];
+function vPaciente(p){
+ const f=phase(p.fase);
+ const fn={resumo:tResumo,anamnese:tAnamnese,ciclo:tCiclo,antropo:tAntropo,exames:tExames,energia:tEnergia,plano:tPlano,supl:tSupl,score:tScore,evol:tEvol}[UI.tab]||tResumo;
+ return `<button class="btn ghost sm" onclick="go('pac')" style="margin-bottom:10px">← Pacientes</button>
+ <div class="row between">
+  <div class="row" style="flex-wrap:nowrap"><div class="avatar">${initials(p.nome)}</div><div><span class="eyebrow" style="margin-bottom:4px">Ficha da paciente</span><h1>${esc(p.nome)}</h1>
+   <div class="row small muted" style="gap:8px;margin-top:4px">${age(p.nascimento)?`<span>${age(p.nascimento)} anos</span>·`:''}${p.parceiro?`<span>com ${esc(p.parceiro)}${age(p.parceiroNasc)?` (${age(p.parceiroNasc)})`:''}</span>·`:''}${statusBadge(p.status)}${f?`<span class="badge" style="background:${f.cor}22;color:${f.cor}">${esc(f.nome)}</span>`:''}</div></div></div>
+  <div class="row">${p.telefone?`<a class="btn" target="_blank" rel="noopener" href="https://wa.me/55${p.telefone.replace(/\D/g,'')}">WhatsApp</a>`:''}<button class="btn" onclick="formPaciente('${p.id}')">Editar</button></div>
+ </div>
+ <div class="tabs">${TABS.map(([k,l])=>`<button class="tab ${UI.tab===k?'on':''}" onclick="UI.tab='${k}';render()">${l}</button>`).join('')}</div>
+ ${fn(p)}`;
+}
+
+/* ---- Resumo ---- */
+function tResumo(p){
+ const av=last(byDate(p.avaliacoes));const v=av?imc(av.peso,av.altura):null;
+ const sc=last(byDate(p.scores));const ci=cycleInfo(p);const pr=phaseProgress(p);const f=phase(p.fase);
+ const lab=labAlerts(p);const nx=nextAppt(p.id);const pl=last(p.planos||[]);
+ return `<div class="grid g4">
+  <div class="card kpi"><span class="l">Peso / IMC</span><span class="v">${av?n1(av.peso)+' kg':'—'}</span><span class="s">${v?`IMC ${n1(v)} · ${imcClass(v)}`:'sem avaliação'}</span></div>
+  <div class="card kpi"><span class="l">Pontuação fértil</span><span class="v">${sc?scorePct(sc)+'%':'—'}</span><span class="s">${sc?'em '+fd(sc.data):'aplique o questionário'}</span></div>
+  <div class="card kpi"><span class="l">Meta energética</span><span class="v">${p.meta?.kcal?n0(p.meta.kcal):'—'}</span><span class="s">${p.meta?.kcal?'kcal/dia':'calcule em Gasto energético'}</span></div>
+  <div class="card kpi"><span class="l">No método há</span><span class="v">${weeksIn(p)}</span><span class="s">semanas · desde ${fd(p.inicio)}</span></div>
+ </div>
+ <div class="grid g2" style="margin-top:16px">
+  <div class="card"><h2>Fase atual</h2>
+   ${f?`<div class="row" style="gap:8px"><i class="phase-dot" style="background:${f.cor};width:12px;height:12px"></i><b>${esc(f.nome)}</b></div><p class="muted" style="margin:6px 0 12px">${esc(f.objetivo)}</p>
+   ${pr?`<div class="progress"><i style="width:${pr.pct}%;background:${f.cor}"></i></div><div class="small muted" style="margin-top:6px">Semana ${pr.w+1} de ${pr.tot}${pr.pct>=100?' · hora de avaliar a próxima fase':''}</div>`:''}
+   <div class="row" style="margin-top:14px">${S.protocolo.map(x=>`<button class="btn sm ${x.id===p.fase?'pri':''}" onclick="setFase('${p.id}','${x.id}')">${esc(x.nome.split('·')[0].trim())}</button>`).join('')}</div>`:'<div class="empty">Sem fase definida.</div>'}
+  </div>
+  <div class="card"><h2>Ciclo hoje</h2>
+   ${ci&&!ci.late?`<div class="row" style="gap:24px"><div class="kpi"><span class="v">Dia ${ci.day}</span><span class="l">de ~${ci.len} dias</span></div>
+   <div class="small"><div>Janela fértil: <b>${fd(ci.fertDate)} a ${fd(addDays(ci.fertDate,6))}</b></div><div>Ovulação estimada: <b>${fd(ci.ovDate)}</b></div><div>Próxima menstruação: <b>${fd(ci.next)}</b></div></div></div>${cycleStrip(ci,true)}`:`<div class="empty">Registre a última menstruação na aba Ciclo.</div>`}
+  </div>
+ </div>
+ <div class="grid g2" style="margin-top:16px">
+  <div class="card"><h2>Perfil do casal</h2>
+   <div class="small muted">Diagnósticos</div><div class="checks" style="margin:4px 0 12px">${(p.anamnese?.diagnosticos||[]).map(d=>`<span class="badge b-brand">${esc(d)}</span>`).join('')||'<span class="muted">—</span>'}</div>
+   <div class="small muted">Tratamentos prévios</div><div class="checks" style="margin:4px 0 12px">${(p.anamnese?.tratamentos||[]).map(d=>`<span class="badge">${esc(d)}</span>`).join('')||'<span class="muted">—</span>'}</div>
+   <div class="grid g3" style="gap:8px"><div><div class="small muted">Tentando há</div><b>${p.anamnese?.tentando?p.anamnese.tentando+' meses':'—'}</b></div><div><div class="small muted">Perdas</div><b>${p.anamnese?.abortos??'—'}</b></div><div><div class="small muted">FIVs</div><b>${p.anamnese?.fivs??'—'}</b></div></div>
+   ${p.objetivo?`<div class="alert" style="margin-top:14px">💬 <span>${esc(p.objetivo)}</span></div>`:''}
+  </div>
+  <div class="card"><h2>Pontos de atenção</h2>
+   ${lab.map(x=>`<div class="alert bad">🔬 <span><b>${esc(x.l.n)}</b>: ${n1(x.v)} ${x.l.u} (alvo ${labRef(x.l)})</span></div>`).join('')}
+   ${!nx?`<div class="alert warn">⏰ <span>Sem retorno agendado. <a href="#" onclick="event.preventDefault();formAppt(null,'${p.id}')">Agendar agora</a></span></div>`:`<div class="alert good">📅 <span>Próxima consulta em <b>${fd(nx.data)}</b> às ${nx.hora||'—'}</span></div>`}
+   ${!pl?`<div class="alert warn">🥗 <span>Ainda não tem plano alimentar.</span></div>`:''}
+   ${!(p.suplementos||[]).length?`<div class="alert warn">💊 <span>Nenhuma suplementação registrada.</span></div>`:''}
+   <div style="margin-top:14px">${p.status==='Gestante'?`<div class="alert good">✦ <span><b>Gestante!</b>${p.resultado?` Beta positivo em ${fd(p.resultado.data)}.`:''}</span></div>`:`<button class="btn pri" onclick="formPositivo('${p.id}')">✦ Registrar gestação</button>`}
+   <button class="btn danger ghost" onclick="delPaciente('${p.id}')">Excluir paciente</button></div>
+  </div>
+ </div>`;
+}
+function setFase(pid,fid){const p=P(pid);if(p.fase===fid)return;p.fase=fid;p.faseInicio=today();(p.evolucao=p.evolucao||[]).push({id:uid(),data:today(),tipo:'Marco',texto:'Início da '+phase(fid).nome});save();render();toast('Fase atualizada')}
+function formPositivo(pid){const p=P(pid);openModal('Registrar gestação ✦',`<div class="form">${F({k:'data',l:'Data do beta positivo',t:'date'},today())}${F({k:'beta',l:'Valor do beta-hCG (opcional)',t:'number'})}${F({k:'forma',l:'Como engravidou',t:'select',o:['Natural','Coito programado','Indução de ovulação','Inseminação (IIU)','FIV']})}${F({k:'obs',l:'Depoimento / observações',t:'textarea',w:'full',ph:'Guarde aqui as palavras dela — vira um case do seu método.'})}</div>`,d=>{
+ p.resultado=d;p.status='Gestante';const f4=S.protocolo.find(f=>/gesta/i.test(f.nome));if(f4){p.fase=f4.id;p.faseInicio=d.data}
+ (p.evolucao=p.evolucao||[]).push({id:uid(),data:d.data,tipo:'Marco',texto:`Beta positivo! (${d.forma})${d.obs?' — '+d.obs:''}`});toast('Que notícia! Gestação registrada ✦')},'Registrar')}
+function delPaciente(id){if(!confirm('Excluir esta paciente e todo o histórico dela? Essa ação não pode ser desfeita.'))return;S.pacientes=S.pacientes.filter(p=>p.id!==id);S.agenda=S.agenda.filter(a=>a.pid!==id);save();go('pac');toast('Paciente excluída')}
+
+/* ---- Anamnese ---- */
+function tAnamnese(p){const a=p.anamnese||{};
+ return `<div class="card"><form id="anam" class="form" onsubmit="event.preventDefault()">
+ ${ANAMNESE.map(s=>`<div class="sec-title">${s.s}</div>${s.f.map(f=>F(f,a[f.k])).join('')}`).join('')}
+ </form><div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn pri" onclick="saveAnam('${p.id}')">Salvar anamnese</button></div></div>`}
+function saveAnam(pid){const p=P(pid);p.anamnese=Object.assign(p.anamnese||{},readForm($('#anam')));save();toast('Anamnese salva')}
+
+/* ---- Ciclo ---- */
+function cycleStrip(ci,compact){
+ let h='<div class="cycle">';const max=compact?ci.len:Math.max(ci.len,ci.day);
+ for(let d=1;d<=max;d++){let c=d<=ci.men?'men':d===ci.ov?'ovu':d>=ci.fertStart&&d<=ci.fertEnd?'fer':d>ci.fertEnd?'lut':'';h+=`<div class="cday ${c} ${d===ci.day?'today':''}" title="${fd(addDays(ci.start,d-1))}">${d}</div>`}
+ return h+'</div>'+(compact?'':`<div class="legend"><span><i style="background:var(--danger-soft)"></i>Menstruação</span><span><i style="background:var(--surface2)"></i>Folicular</span><span><i style="background:var(--sage-soft)"></i>Janela fértil</span><span><i style="background:var(--sage)"></i>Ovulação estimada</span><span><i style="background:var(--gold-soft)"></i>Lútea</span></div>`);
+}
+function tCiclo(p){const c=p.ciclo=p.ciclo||{registros:[]};const ci=cycleInfo(p);const regs=byDate(c.registros,'inicio').reverse();
+ const fase=ci?(ci.day<=ci.men?'Menstrual':ci.day<ci.fertStart?'Folicular':ci.day<=ci.fertEnd?'Janela fértil':'Lútea'):'';
+ const dica={Menstrual:'Foco em ferro e anti-inflamatórios: feijões, folhas escuras, cúrcuma, ômega-3.','Folicular':'Boa fase para proteínas de qualidade, folato e antioxidantes para o folículo em crescimento.','Janela fértil':'Manter hidratação, zinco e selênio; reforçar alimentos ricos em antioxidantes.','Lútea':'Apoio à progesterona: magnésio, vitamina B6, gorduras boas e glicemia estável.'}[fase];
+ return `<div class="grid g2">
+ <div class="card"><h2>Ciclo atual</h2>
+  ${ci?(ci.late?`<div class="alert warn">Último registro é antigo. Adicione a menstruação mais recente.</div>`:`<div class="row" style="gap:28px;margin-bottom:6px"><div class="kpi"><span class="v">Dia ${ci.day}</span><span class="l">Fase ${fase.toLowerCase()}</span></div><div class="small"><div>Duração média: <b>${ci.len} dias</b></div><div>Ovulação estimada: <b>${fd(ci.ovDate)}</b></div><div>Janela fértil: <b>${fd(ci.fertDate)} – ${fd(addDays(ci.fertDate,6))}</b></div><div>Próxima menstruação: <b>${fd(ci.next)}</b></div></div></div>${cycleStrip(ci)}
+  <div class="alert good" style="margin-top:14px">🌱 <span><b>Nutrição nesta fase:</b> ${dica}</span></div>`):'<div class="empty">Registre a primeira menstruação para ver o ciclo.</div>'}
+  <p class="small muted" style="margin-top:12px">Estimativa pelo método do calendário (ovulação ≈ 14 dias antes da próxima menstruação). Ciclos irregulares exigem confirmação por teste de ovulação ou ultrassom.</p>
+ </div>
+ <div class="card"><div class="row between"><h2>Registros de menstruação</h2><button class="btn sm pri" onclick="formCiclo('${p.id}')">+ Registrar</button></div>
+  <form id="cicloCfg" class="form" style="margin:6px 0 14px" onchange="const d=readForm(this);Object.assign(P('${p.id}').ciclo,d);save();render()">${F({k:'duracao',l:'Duração média informada (dias)',t:'number'},c.duracao||28)}${F({k:'menstruacao',l:'Dias de menstruação',t:'number'},c.menstruacao||5)}</form>
+  ${regs.length?`<table><thead><tr><th>Início</th><th>Ciclo</th><th>Sintomas / notas</th><th></th></tr></thead><tbody>${regs.map((r,i)=>{const prev=regs[i+1];return `<tr><td>${fd(r.inicio)}</td><td>${prev?diffDays(prev.inicio,r.inicio)+' dias':'—'}</td><td class="small">${esc(r.obs||'')}</td><td class="num"><button class="btn sm ghost danger" onclick="delCiclo('${p.id}','${r.id}')">✕</button></td></tr>`}).join('')}</tbody></table>`:'<div class="empty">Nenhum registro.</div>'}
+ </div></div>`}
+function formCiclo(pid){openModal('Registrar menstruação',`<div class="form">${F({k:'inicio',l:'Primeiro dia da menstruação',t:'date'},today())}${F({k:'obs',l:'Sintomas / notas',ph:'Cólica, fluxo, muco, teste de ovulação…'})}</div>`,d=>{if(!d.inicio)return false;const p=P(pid);p.ciclo.registros.push({id:uid(),...d});toast('Ciclo registrado')})}
+function delCiclo(pid,id){const p=P(pid);p.ciclo.registros=p.ciclo.registros.filter(r=>r.id!==id);save();render()}
+
+/* ---- Avaliação física ---- */
+function tAntropo(p){const av=byDate(p.avaliacoes);const l=last(av);const first=av[0];
+ if(av.length>1)chart('ch-peso',{type:'line',data:{labels:av.map(a=>fdShort(a.data)),datasets:[{label:'Peso (kg)',data:av.map(a=>a.peso),borderColor:css('--brand'),backgroundColor:css('--brand-soft'),fill:true,tension:.35,pointRadius:4},{label:'Cintura (cm)',data:av.map(a=>a.cintura||null),borderColor:css('--sage'),tension:.35,pointRadius:3,yAxisID:'y2'}]},options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom'}},scales:{y:{title:{display:true,text:'kg'}},y2:{position:'right',grid:{display:false},title:{display:true,text:'cm'}}}}});
+ const v=l?imc(l.peso,l.altura):null;const rcq=l&&l.cintura&&l.quadril?l.cintura/l.quadril:null;
+ return `<div class="grid g4">
+  <div class="card kpi"><span class="l">Peso atual</span><span class="v">${l?n1(l.peso):'—'} <small style="font-size:14px">kg</small></span><span class="s">${first&&l&&first!==l?`${l.peso-first.peso>0?'+':''}${n1(l.peso-first.peso)} kg desde o início`:''}</span></div>
+  <div class="card kpi"><span class="l">IMC</span><span class="v">${n1(v)}</span><span class="s">${imcClass(v)}${v&&(v<20||v>25)?' · faixa associada à melhor fertilidade: 20–25':''}</span></div>
+  <div class="card kpi"><span class="l">Cintura</span><span class="v">${l?.cintura?n1(l.cintura):'—'} <small style="font-size:14px">cm</small></span><span class="s">${l?.cintura?(l.cintura>=80?'acima de 80 cm: risco metabólico':'adequada'):''}</span></div>
+  <div class="card kpi"><span class="l">Relação cintura/quadril</span><span class="v">${rcq?rcq.toFixed(2):'—'}</span><span class="s">${rcq?(rcq>0.85?'elevada (> 0,85)':'adequada'):''}</span></div>
+ </div>
+ ${av.length>1?`<div class="card" style="margin-top:16px"><h2>Evolução</h2><div style="height:260px"><canvas id="ch-peso"></canvas></div></div>`:''}
+ <div class="card" style="margin-top:16px"><div class="row between"><h2>Avaliações</h2><button class="btn pri sm" onclick="formAval('${p.id}')">+ Nova avaliação</button></div>
+ ${av.length?`<div class="tbl-wrap"><table><thead><tr><th>Data</th><th class="num">Peso</th><th class="num">Altura</th><th class="num">IMC</th><th class="num">Cintura</th><th class="num">Quadril</th><th class="num">% Gordura</th><th>Obs.</th><th></th></tr></thead><tbody>
+ ${[...av].reverse().map(a=>`<tr><td>${fd(a.data)}</td><td class="num">${n1(a.peso)}</td><td class="num">${n1(a.altura)}</td><td class="num">${n1(imc(a.peso,a.altura))}</td><td class="num">${n1(a.cintura)}</td><td class="num">${n1(a.quadril)}</td><td class="num">${n1(a.gordura)}</td><td class="small">${esc(a.obs||'')}</td><td class="num"><button class="btn sm ghost" onclick="formAval('${p.id}','${a.id}')">Editar</button></td></tr>`).join('')}
+ </tbody></table></div>`:'<div class="empty">Nenhuma avaliação registrada.</div>'}</div>`}
+function formAval(pid,id){const p=P(pid);const l=last(byDate(p.avaliacoes))||{};const a=id?p.avaliacoes.find(x=>x.id===id):{data:today(),altura:l.altura};
+ openModal(id?'Editar avaliação':'Nova avaliação',`<div class="form">${F({k:'data',l:'Data',t:'date'},a.data)}${F({k:'peso',l:'Peso (kg)',t:'number'},a.peso)}${F({k:'altura',l:'Altura (cm)',t:'number'},a.altura)}${F({k:'gordura',l:'% de gordura',t:'number'},a.gordura)}${F({k:'cintura',l:'Circunferência da cintura (cm)',t:'number'},a.cintura)}${F({k:'quadril',l:'Circunferência do quadril (cm)',t:'number'},a.quadril)}${F({k:'pa',l:'Pressão arterial',ph:'120/80'},a.pa)}${F({k:'obs',l:'Observações',t:'textarea',w:'full'},a.obs)}</div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="P('${pid}').avaliacoes=P('${pid}').avaliacoes.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir avaliação</button>`:''}`,d=>{if(!d.peso||!d.data){toast('Informe data e peso');return false}if(id)Object.assign(a,d);else p.avaliacoes.push({id:uid(),...d})})}
+
+/* ---- Exames ---- */
+function tExames(p){const ex=byDate(p.exames).reverse().slice(0,4);
+ const groups=[...new Set(LABS.map(l=>l.g))];
+ return `<div class="card"><div class="row between"><div><h2 style="margin-bottom:4px">Exames laboratoriais</h2><p class="small muted" style="margin:0">Faixas-alvo orientativas, com foco em fertilidade. Confira sempre a referência do laboratório.</p></div><button class="btn pri sm" onclick="formExame('${p.id}')">+ Lançar exames</button></div>
+ ${ex.length?`<div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>Marcador</th><th>Alvo</th>${ex.map(e=>`<th class="num"><a href="#" onclick="event.preventDefault();formExame('${p.id}','${e.id}')">${fd(e.data)}</a></th>`).join('')}</tr></thead><tbody>
+ ${groups.map(g=>{const rows=LABS.filter(l=>l.g===g&&ex.some(e=>examVal(e,l.k)!==''&&examVal(e,l.k)!=null));if(!rows.length)return '';return `<tr><td colspan="${2+ex.length}" style="background:var(--surface2);font-weight:600;font-size:12px">${g}</td></tr>`+rows.map(l=>`<tr><td>${l.n}</td><td class="small muted">${labRef(l)} ${l.u}</td>${ex.map(e=>{const v=examVal(e,l.k);const f=labFlag(l,v);return `<td class="num"><span class="lab-flag ${f}">${v===''||v==null?'—':n1(v)}${f==='lo'?' ↓':f==='hi'?' ↑':''}</span></td>`}).join('')}</tr>`).join('')}).join('')}
+ </tbody></table></div>`:'<div class="empty">Nenhum exame lançado.</div>'}
+ </div>`}
+function formExame(pid,id){const p=P(pid);const e=id?p.exames.find(x=>x.id===id):{data:today(),v:{}};
+ const groups=[...new Set(LABS.map(l=>l.g))];
+ openModal(id?'Editar exames':'Lançar exames',`<div class="form">${F({k:'data',l:'Data da coleta',t:'date'},e.data)}${F({k:'lab',l:'Laboratório'},e.lab)}
+ ${groups.map(g=>`<div class="sec-title">${g}</div>${LABS.filter(l=>l.g===g&&!l.calc).map(l=>F({k:'v_'+l.k,l:`${l.n} <span style="opacity:.7">(${l.u})</span>`,t:'number',ph:'alvo '+labRef(l)},e.v[l.k])).join('')}`).join('')}
+ ${F({k:'obs',l:'Observações',t:'textarea',w:'full'},e.obs)}</div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="P('${pid}').exames=P('${pid}').exames.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir este lançamento</button>`:''}`,d=>{
+ const v={};Object.keys(d).forEach(k=>{if(k.startsWith('v_')&&d[k]!=='')v[k.slice(2)]=d[k]});
+ if(id)Object.assign(e,{data:d.data,lab:d.lab,obs:d.obs,v});else p.exames.push({id:uid(),data:d.data,lab:d.lab,obs:d.obs,v});toast('Exames salvos')})}
+
+/* ---- Gasto energético ---- */
+const AF=[[1.2,'Sedentária (1,2)'],[1.375,'Levemente ativa (1,375)'],[1.55,'Moderadamente ativa (1,55)'],[1.725,'Muito ativa (1,725)']];
+function calcE(e){const w=+e.peso,h=+e.altura,i=+e.idade;let tmb=0;
+ if(e.formula==='harris')tmb=e.sexo==='M'?66.47+13.75*w+5.003*h-6.755*i:655.1+9.563*w+1.85*h-4.676*i;
+ else if(e.formula==='manual')tmb=+e.tmbManual||0;
+ else tmb=10*w+6.25*h-5*i+(e.sexo==='M'?5:-161);
+ const get=tmb*(+e.af||1.2);const kcal=get+(+e.ajuste||0);
+ return{tmb,get,kcal,c:kcal*(+e.pc||0)/400,p:kcal*(+e.pp||0)/400,g:kcal*(+e.pg||0)/900,pkg:w?kcal*(+e.pp||0)/400/w:0}}
+function tEnergia(p){const a=last(byDate(p.avaliacoes))||{};
+ const e=Object.assign({peso:a.peso||'',altura:a.altura||'',idade:age(p.nascimento)||'',sexo:'F',formula:'mifflin',af:1.375,ajuste:0,pc:45,pp:25,pg:30},p.energia||{});
+ return `<div class="grid g2"><div class="card"><h2>Parâmetros</h2>
+ <form id="enf" class="form" oninput="liveE()" onchange="liveE()">
+ ${F({k:'peso',l:'Peso (kg)',t:'number'},e.peso)}${F({k:'altura',l:'Altura (cm)',t:'number'},e.altura)}
+ ${F({k:'idade',l:'Idade',t:'number'},e.idade)}${F({k:'sexo',l:'Sexo',t:'select',o:[['F','Feminino'],['M','Masculino (parceiro)']]},e.sexo)}
+ ${F({k:'formula',l:'Fórmula',t:'select',o:[['mifflin','Mifflin-St Jeor'],['harris','Harris-Benedict'],['manual','TMB manual (bioimpedância)']]},e.formula)}
+ ${F({k:'tmbManual',l:'TMB manual (kcal)',t:'number'},e.tmbManual)}
+ ${F({k:'af',l:'Fator de atividade',t:'select',o:AF},e.af)}
+ ${F({k:'ajuste',l:'Ajuste (kcal/dia, ±)',t:'number',ph:'ex.: -300'},e.ajuste)}
+ <div class="sec-title">Distribuição de macronutrientes (%)</div>
+ ${F({k:'pc',l:'Carboidratos %',t:'number'},e.pc)}${F({k:'pp',l:'Proteínas %',t:'number'},e.pp)}${F({k:'pg',l:'Gorduras %',t:'number'},e.pg)}
+ </form></div>
+ <div class="card"><h2>Resultado</h2><div id="enr"></div>
+ <button class="btn pri" style="margin-top:16px" onclick="saveE('${p.id}')">Definir como meta da paciente</button>
+ <p class="small muted">A meta definida aparece no plano alimentar para comparar com o que foi prescrito.</p></div></div>`}
+function liveE(){const f=$('#enf');if(!f)return;const e=readForm(f);const r=calcE(e);const sum=(+e.pc||0)+(+e.pp||0)+(+e.pg||0);
+ $('#enr').innerHTML=`<div class="grid g3" style="gap:10px"><div class="kpi"><span class="l">TMB</span><span class="v" style="font-size:24px">${n0(r.tmb)}</span><span class="l">kcal</span></div><div class="kpi"><span class="l">GET</span><span class="v" style="font-size:24px">${n0(r.get)}</span><span class="l">kcal</span></div><div class="kpi"><span class="l">Meta</span><span class="v" style="font-size:24px;color:var(--brand)">${n0(r.kcal)}</span><span class="l">kcal/dia</span></div></div>
+ <table style="margin-top:14px"><thead><tr><th>Macro</th><th class="num">%</th><th class="num">g/dia</th><th class="num">g/kg</th></tr></thead><tbody>
+ <tr><td>Carboidratos</td><td class="num">${e.pc}</td><td class="num">${n0(r.c)}</td><td class="num">${e.peso?n1(r.c/e.peso):'—'}</td></tr>
+ <tr><td>Proteínas</td><td class="num">${e.pp}</td><td class="num">${n0(r.p)}</td><td class="num">${e.peso?n1(r.pkg):'—'}</td></tr>
+ <tr><td>Gorduras</td><td class="num">${e.pg}</td><td class="num">${n0(r.g)}</td><td class="num">${e.peso?n1(r.g/e.peso):'—'}</td></tr></tbody></table>
+ ${sum!==100?`<div class="alert warn" style="margin-top:10px">A soma dos macros está em ${sum}%. Ajuste para 100%.</div>`:''}`}
+function saveE(pid){const p=P(pid);const e=readForm($('#enf'));const r=calcE(e);p.energia=e;p.meta={kcal:Math.round(r.kcal),c:Math.round(r.c),p:Math.round(r.p),g:Math.round(r.g)};save();toast('Meta definida: '+n0(r.kcal)+' kcal')}
+
+/* ---- Plano alimentar ---- */
+const MEALS_DEFAULT=[['Café da manhã','07:00'],['Lanche da manhã','10:00'],['Almoço','12:30'],['Lanche da tarde','16:00'],['Jantar','19:30'],['Ceia','21:30']];
+function tPlano(p){p.planos=p.planos||[];
+ let pl=p.planos.find(x=>x.id===UI.planId)||last(p.planos);
+ const list=`<div class="row" style="margin-bottom:14px">${p.planos.map(x=>`<button class="btn sm ${pl&&x.id===pl.id?'pri':''}" onclick="UI.planId='${x.id}';render()">${esc(x.nome)}</button>`).join('')}<button class="btn sm" onclick="newPlan('${p.id}')">+ Novo plano</button></div>`;
+ if(!pl)return list+`<div class="card empty">Nenhum plano alimentar ainda. Crie o primeiro, ele já vem com as 6 refeições do dia.</div>`;
+ UI.planId=pl.id;const t=planTotals(pl);const m=p.meta||{};
+ const bar=(l,v,alvo,u)=>{const pct=alvo?Math.min(130,v/alvo*100):0;const col=!alvo?'var(--muted)':pct>110||pct<90?'var(--gold)':'var(--sage)';return `<div class="bar-row"><span>${l}</span><div class="progress"><i style="width:${Math.min(100,pct)}%;background:${col}"></i></div><span class="num small">${n0(v)}${alvo?' / '+n0(alvo):''} ${u}</span></div>`};
+ const kc=t.c*4+t.p*4+t.g*9||1;
+ chart('ch-macro',{type:'doughnut',data:{labels:['Carboidratos','Proteínas','Gorduras'],datasets:[{data:[t.c*4,t.p*4,t.g*9].map(x=>Math.round(x/kc*100)),backgroundColor:[css('--gold'),css('--ink'),css('--sage')],borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{boxWidth:10}},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}%`}}},maintainAspectRatio:false}});
+ const foodsOpt=allFoods().map(f=>`<option value="${esc(f.nome)}">`).join('');
+ const tagsPresent=Object.keys(TAGS).map(k=>[k,t.tags[k]||0]);
+ return list+`<datalist id="foodlist">${foodsOpt}</datalist>
+ <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;align-items:start" id="plan-grid">
+ <div>
+  <div class="card" style="margin-bottom:14px"><div class="row between">
+   <input style="font-family:var(--serif);font-size:18px;font-weight:600;max-width:360px;border-color:transparent;padding:4px 6px" value="${esc(pl.nome)}" onchange="planSet('nome',this.value)">
+   <div class="row"><button class="btn sm" onclick="addMeal()">+ Refeição</button><button class="btn sm" onclick="dupPlan()">Duplicar</button><button class="btn sm pri" onclick="printPlan('${p.id}')">Imprimir / PDF</button><button class="btn sm ghost danger" onclick="delPlan()">Excluir</button></div></div>
+   <div class="small muted" style="padding:0 6px">Criado em ${fd(pl.data)}${phase(pl.fase)?' · '+esc(phase(pl.fase).nome):''}</div>
+  </div>
+  ${pl.refeicoes.map((ml,mi)=>{const mt=mealTotals(ml);return `<div class="meal">
+   <div class="meal-head"><input type="time" value="${ml.hora||''}" onchange="mealSet(${mi},'hora',this.value)" style="width:96px"><input value="${esc(ml.nome)}" onchange="mealSet(${mi},'nome',this.value)" style="flex:1;min-width:140px">
+   <span class="small muted num">${n0(mt.kcal)} kcal · C ${n0(mt.c)} · P ${n0(mt.p)} · G ${n0(mt.g)}</span>
+   <button class="btn sm ghost" title="Subir" onclick="moveMeal(${mi},-1)">↑</button><button class="btn sm ghost danger" title="Remover refeição" onclick="delMeal(${mi})">✕</button></div>
+   ${ml.itens.length?`<div class="tbl-wrap"><table><thead><tr><th>Alimento</th><th style="width:150px">Medida caseira</th><th class="num" style="width:90px">g/ml</th><th class="num">kcal</th><th class="num">C</th><th class="num">P</th><th class="num">G</th><th></th></tr></thead><tbody>
+   ${ml.itens.map((it,ii)=>{const f=food(it.f);if(!f)return '';const k=(+it.g||0)/100;return `<tr><td>${esc(f.nome)} <span>${f.tags.map(tagHtml).join(' ')}</span></td><td><input value="${esc(it.m||'')}" placeholder="ex.: 2 col. sopa" onchange="itemSet(${mi},${ii},'m',this.value)"></td><td><input type="number" step="any" class="num" value="${it.g}" onchange="itemSet(${mi},${ii},'g',+this.value)"></td><td class="num">${n0(f.kcal*k)}</td><td class="num">${n1(f.c*k)}</td><td class="num">${n1(f.p*k)}</td><td class="num">${n1(f.g*k)}</td><td class="num"><button class="btn sm ghost danger" onclick="delItem(${mi},${ii})">✕</button></td></tr>`}).join('')}
+   </tbody></table></div>`:''}
+   <div class="add-row"><input list="foodlist" id="af-${mi}" placeholder="Buscar alimento…" onkeydown="if(event.key==='Enter')addItem(${mi})"><input type="number" id="ag-${mi}" value="100" placeholder="g"><input id="am-${mi}" placeholder="Medida caseira" onkeydown="if(event.key==='Enter')addItem(${mi})"><button class="btn sm" onclick="addItem(${mi})">Adicionar</button></div>
+   <div style="padding:0 14px 12px"><textarea rows="1" placeholder="Substituições e observações desta refeição…" onchange="mealSet(${mi},'obs',this.value)">${esc(ml.obs||'')}</textarea></div>
+  </div>`}).join('')}
+  <div class="card"><h3>Orientações gerais do plano</h3><textarea rows="4" placeholder="Ex.: beber 2,5 L de água, preferir orgânicos, evitar plástico aquecido…" onchange="planSet('obs',this.value)">${esc(pl.obs||'')}</textarea></div>
+ </div>
+ <div style="position:sticky;top:16px" class="grid">
+  <div class="card"><h3>Total do dia</h3>
+   <div class="kpi" style="margin-bottom:10px"><span class="v">${n0(t.kcal)} <small style="font-size:14px">kcal</small></span><span class="l">${m.kcal?`meta ${n0(m.kcal)} kcal (${Math.round(t.kcal/m.kcal*100)}%)`:'sem meta definida'}</span></div>
+   ${bar('Carboidratos',t.c,m.c,'g')}${bar('Proteínas',t.p,m.p,'g')}${bar('Gorduras',t.g,m.g,'g')}${bar('Fibras',t.f,25,'g')}
+   <div style="height:170px;margin-top:10px"><canvas id="ch-macro"></canvas></div>
+  </div>
+  <div class="card"><h3>Nutrientes-chave da fertilidade</h3><p class="small muted" style="margin-top:-6px">Quantos alimentos do plano são fonte de cada um</p>
+   ${tagsPresent.map(([k,c])=>`<div class="row between" style="padding:4px 0"><span>${tagHtml(k)}</span><span class="small ${c?'':'muted'}" style="${c?'':'color:var(--danger)'}">${c?c+' alimento'+(c>1?'s':''):'ausente'}</span></div>`).join('')}
+  </div>
+ </div></div>
+ <style>@media(max-width:1180px){#plan-grid{grid-template-columns:1fr!important}#plan-grid>div:last-child{position:static!important}}</style>`}
+function curPlan(){const p=P(UI.pid);return p.planos.find(x=>x.id===UI.planId)}
+function commit(){save();render()}
+function newPlan(pid){const p=P(pid);const pl={id:uid(),nome:'Plano '+(p.planos.length+1),data:today(),fase:p.fase,refeicoes:MEALS_DEFAULT.map(([nome,hora])=>({nome,hora,itens:[],obs:''})),obs:''};p.planos.push(pl);UI.planId=pl.id;commit()}
+function dupPlan(){const p=P(UI.pid);const c=JSON.parse(JSON.stringify(curPlan()));c.id=uid();c.nome+=' (cópia)';c.data=today();p.planos.push(c);UI.planId=c.id;commit();toast('Plano duplicado')}
+function delPlan(){if(!confirm('Excluir este plano?'))return;const p=P(UI.pid);p.planos=p.planos.filter(x=>x.id!==UI.planId);UI.planId=null;commit()}
+function planSet(k,v){curPlan()[k]=v;commit()}
+function mealSet(mi,k,v){curPlan().refeicoes[mi][k]=v;commit()}
+function addMeal(){curPlan().refeicoes.push({nome:'Nova refeição',hora:'',itens:[],obs:''});commit()}
+function delMeal(mi){if(curPlan().refeicoes[mi].itens.length&&!confirm('Remover esta refeição e seus alimentos?'))return;curPlan().refeicoes.splice(mi,1);commit()}
+function moveMeal(mi,d){const r=curPlan().refeicoes;const j=mi+d;if(j<0||j>=r.length)return;[r[mi],r[j]]=[r[j],r[mi]];commit()}
+function addItem(mi){const n=$('#af-'+mi).value.trim().toLowerCase();if(!n)return;const f=allFoods().find(x=>x.nome.toLowerCase()===n)||allFoods().find(x=>x.nome.toLowerCase().includes(n));if(!f){toast('Alimento não encontrado. Cadastre em Alimentos.');return}
+ curPlan().refeicoes[mi].itens.push({f:f.id,g:+$('#ag-'+mi).value||100,m:$('#am-'+mi).value});commit();setTimeout(()=>{const i=$('#af-'+mi);i&&i.focus()},20)}
+function itemSet(mi,ii,k,v){curPlan().refeicoes[mi].itens[ii][k]=v;commit()}
+function delItem(mi,ii){curPlan().refeicoes[mi].itens.splice(ii,1);commit()}
+function printPlan(pid){const p=P(pid);const pl=curPlan();const s=S.settings;
+ $('#print').innerHTML=`<div class="ph"><div><h1 style="font-family:var(--serif);color:#8A4630">${esc(s.clinica)}</h1><div>${esc(s.nutri)} · ${esc(s.crn)}</div>${s.telefone||s.instagram?`<div style="color:#777">${esc(s.telefone)} ${esc(s.instagram)}</div>`:''}</div><div style="text-align:right"><b>${esc(p.nome)}</b><div>${esc(pl.nome)}</div><div style="color:#777">${fd(pl.data)}${phase(pl.fase)?' · '+esc(phase(pl.fase).nome):''}</div></div></div>
+ ${pl.refeicoes.filter(m=>m.itens.length||m.obs).map(m=>`<div class="pm"><h3>${m.hora?m.hora+' · ':''}${esc(m.nome)}</h3><ul>${m.itens.map(it=>{const f=food(it.f);return f?`<li>${it.m?esc(it.m)+' de ':''}${esc(f.nome)} <span style="color:#888">(${n0(it.g)} g)</span></li>`:''}).join('')}</ul>${m.obs?`<p style="margin:6px 0 0;color:#555"><i>Substituições:</i> ${esc(m.obs)}</p>`:''}</div>`).join('')}
+ ${(p.suplementos||[]).length?`<div class="pm"><h3>Suplementação</h3><ul>${p.suplementos.map(x=>`<li><b>${esc(x.nome)}</b>${x.dose?' — '+esc(x.dose):''}${x.horario?' · '+esc(x.horario):''}${x.obs?' · '+esc(x.obs):''}</li>`).join('')}</ul></div>`:''}
+ ${pl.obs?`<div class="pm"><h3>Orientações gerais</h3><p style="white-space:pre-wrap">${esc(pl.obs)}</p></div>`:''}
+ <div class="pf">${esc(s.metodo)} · Plano individual e intransferível. Não altere sem orientação profissional.</div>`;
+ window.print()}
+
+/* ---- Suplementação ---- */
+function tSupl(p){p.suplementos=p.suplementos||[];
+ return `<div class="card"><div class="row between"><h2>Suplementação prescrita</h2><button class="btn pri sm" onclick="formSupl('${p.id}')">+ Adicionar</button></div>
+ <div class="small muted" style="margin:-4px 0 10px">Atalhos:</div><div class="checks" style="margin-bottom:16px">${SUPLEMENTOS.map(s=>`<button class="btn sm" onclick="formSupl('${p.id}',null,'${s}')">${s}</button>`).join('')}</div>
+ ${p.suplementos.length?`<table><thead><tr><th>Suplemento</th><th>Dose</th><th>Horário</th><th>Início</th><th>Observações</th><th></th></tr></thead><tbody>${p.suplementos.map(s=>`<tr><td><b>${esc(s.nome)}</b></td><td>${esc(s.dose||'—')}</td><td>${esc(s.horario||'—')}</td><td>${fd(s.inicio)}</td><td class="small">${esc(s.obs||'')}</td><td class="num"><button class="btn sm ghost" onclick="formSupl('${p.id}','${s.id}')">Editar</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Nenhum suplemento prescrito.</div>'}
+ <p class="small muted" style="margin-top:12px">A suplementação aparece automaticamente na impressão do plano alimentar.</p></div>`}
+function formSupl(pid,id,nome){const p=P(pid);const s=id?p.suplementos.find(x=>x.id===id):{nome:nome||'',inicio:today()};
+ openModal(id?'Editar suplemento':'Novo suplemento',`<div class="form">${F({k:'nome',l:'Suplemento',w:'full'},s.nome)}${F({k:'dose',l:'Dose',ph:'ex.: 1 cápsula'},s.dose)}${F({k:'horario',l:'Horário',ph:'ex.: no almoço'},s.horario)}${F({k:'inicio',l:'Início',t:'date'},s.inicio)}${F({k:'para',l:'Para',t:'select',o:['Paciente','Parceiro','Ambos']},s.para)}${F({k:'obs',l:'Observações',t:'textarea',w:'full'},s.obs)}</div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="P('${pid}').suplementos=P('${pid}').suplementos.filter(x=>x.id!=='${id}');save();closeModal();render()">Remover</button>`:''}`,d=>{if(!d.nome)return false;if(id)Object.assign(s,d);else p.suplementos.push({id:uid(),...d})})}
+
+/* ---- Pontuação fértil ---- */
+function tScore(p){p.scores=p.scores||[];const sc=byDate(p.scores);const l=last(sc);
+ if(sc.length>1)chart('ch-score',{type:'line',data:{labels:sc.map(s=>fdShort(s.data)),datasets:[{data:sc.map(scorePct),borderColor:css('--sage'),backgroundColor:css('--sage-soft'),fill:true,tension:.35,pointRadius:4}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}});
+ const lp=l?scorePct(l):null;
+ return `<div class="grid g2"><div class="card"><h2>Novo questionário</h2><p class="small muted" style="margin-top:-6px">Hábitos ligados à fertilidade. Aplique na consulta e reaplique a cada retorno para medir a evolução.</p>
+ <form id="scf">${F({k:'data',l:'Data',t:'date'},today())}
+ ${SCORE.map((q,i)=>`<div class="score-q"><span>${q}</span><div class="seg">${[['0','Nunca'],['1','Às vezes'],['2','Sempre']].map(([v,t])=>`<label><input type="radio" name="q${i}" value="${v}" ${(l?.resp?.['q'+i]??'1')==v?'checked':''}><span>${t}</span></label>`).join('')}</div></div>`).join('')}
+ </form><button class="btn pri" style="margin-top:14px" onclick="saveScore('${p.id}')">Salvar pontuação</button></div>
+ <div class="grid" style="align-content:start">
+  <div class="card kpi hero-success"><span class="l">Última pontuação</span><span class="v" style="font-size:44px">${lp!=null?lp+'%':'—'}</span><span class="s">${l?fd(l.data)+(sc.length>1?` · ${lp-scorePct(sc[0])>=0?'+':''}${lp-scorePct(sc[0])} pts desde a 1ª`:''):'nenhum questionário ainda'}</span></div>
+  ${sc.length>1?`<div class="card"><h3>Evolução</h3><div style="height:200px"><canvas id="ch-score"></canvas></div></div>`:''}
+  ${l?`<div class="card"><h3>Para trabalhar</h3>${SCORE.map((q,i)=>[q,+l.resp['q'+i]]).filter(x=>x[1]<2).sort((a,b)=>a[1]-b[1]).map(([q,v])=>`<div class="alert ${v===0?'bad':'warn'}">${v===0?'●':'◐'} <span>${q}</span></div>`).join('')||'<div class="alert good">Todos os hábitos em dia!</div>'}</div>`:''}
+ </div></div>`}
+function saveScore(pid){const d=readForm($('#scf'));const resp={};SCORE.forEach((q,i)=>resp['q'+i]=+d['q'+i]);P(pid).scores.push({id:uid(),data:d.data,resp});save();render();toast('Pontuação salva')}
+
+/* ---- Evolução ---- */
+function tEvol(p){p.evolucao=p.evolucao||[];const ev=byDate(p.evolucao).reverse();const ap=byDate(S.agenda.filter(a=>a.pid===p.id)).reverse();
+ return `<div class="grid g2"><div class="card"><div class="row between"><h2>Linha do tempo</h2><button class="btn pri sm" onclick="formEvol('${p.id}')">+ Registrar</button></div>
+ ${ev.length?`<div class="timeline" style="margin-top:10px">${ev.map(e=>`<div class="tl ${e.tipo==='Marco'?'marco':''}"><div class="row between"><b>${fd(e.data)} <span class="badge ${e.tipo==='Marco'?'b-gold':''}">${esc(e.tipo)}</span></b><button class="btn sm ghost" onclick="formEvol('${p.id}','${e.id}')">Editar</button></div><div style="white-space:pre-wrap;margin-top:4px">${esc(e.texto)}</div></div>`).join('')}</div>`:'<div class="empty">Registre aqui a evolução de cada consulta, conversas e marcos.</div>'}</div>
+ <div class="card"><div class="row between"><h2>Consultas</h2><button class="btn sm" onclick="formAppt(null,'${p.id}')">+ Agendar</button></div>
+ ${ap.length?ap.map(a=>`<div class="list-item"><div style="flex:1"><b>${fd(a.data)} ${a.hora||''}</b><div class="small muted">${esc(a.tipo)} · ${esc(a.modalidade)}</div></div><span class="badge ${a.status==='Realizada'?'b-sage':a.status==='Faltou'?'b-danger':'b-brand'}">${a.status}</span><span class="small num">${brl(a.valor)}${a.pago?' ✓':''}</span></div>`).join(''):'<div class="empty">Nenhuma consulta.</div>'}</div></div>`}
+function formEvol(pid,id){const p=P(pid);const e=id?p.evolucao.find(x=>x.id===id):{data:today(),tipo:'Consulta'};
+ openModal(id?'Editar registro':'Novo registro',`<div class="form">${F({k:'data',l:'Data',t:'date'},e.data)}${F({k:'tipo',l:'Tipo',t:'select',o:['Consulta','Mensagem','Ajuste de plano','Marco']},e.tipo)}${F({k:'texto',l:'Anotações',t:'textarea',r:7,w:'full',ph:'Como ela está, adesão, sintomas, ajustes feitos, próximos passos…'},e.texto)}</div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="P('${pid}').evolucao=P('${pid}').evolucao.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir registro</button>`:''}`,d=>{if(!d.texto)return false;if(id)Object.assign(e,d);else p.evolucao.push({id:uid(),...d})})}
+
+/* ============ AGENDA ============ */
+function vAgenda(){
+ const base=pd(today());const dow=(base.getDay()+6)%7;const mon=addDays(today(),-dow+UI.week*7);
+ const days=[...Array(7)].map((_,i)=>addDays(mon,i));
+ const mes=addDays(mon,3).slice(0,7);const am=S.agenda.filter(a=>a.data.startsWith(mes));
+ const rec=am.filter(a=>a.pago).reduce((s,a)=>s+(+a.valor||0),0),pend=am.filter(a=>!a.pago&&a.status!=='Faltou').reduce((s,a)=>s+(+a.valor||0),0);
+ const real=am.filter(a=>a.status==='Realizada').length,falt=am.filter(a=>a.status==='Faltou').length;
+ const mesNome=pd(mes+'-15').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ return `<div class="top"><div><span class="eyebrow">Agenda &amp; financeiro</span><h1>Sua <em>semana</em></h1><p>${fd(days[0])} a ${fd(days[6])}</p></div>
+ <div class="row"><button class="btn" onclick="UI.week--;render()">←</button><button class="btn" onclick="UI.week=0;render()">Hoje</button><button class="btn" onclick="UI.week++;render()">→</button><button class="btn pri" onclick="formAppt()">+ Consulta</button></div></div>
+ <div class="week">${days.map(d=>{const ap=S.agenda.filter(a=>a.data===d).sort((a,b)=>(a.hora||'').localeCompare(b.hora||''));return `<div class="wday ${d===today()?'today':''}"><h4>${pd(d).toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit'})}</h4>
+  ${ap.map(a=>{const p=P(a.pid);return `<div class="appt ${a.status==='Realizada'?'done':a.status==='Faltou'?'miss':''}" onclick="formAppt('${a.id}')"><b>${a.hora||''} ${esc(p?.nome.split(' ')[0]||'—')}</b>${esc(a.tipo)}${a.modalidade==='Online'?' · online':''}</div>`}).join('')}
+  <button class="btn sm ghost" style="width:100%;justify-content:center;opacity:.6" onclick="formAppt(null,null,'${d}')">+</button></div>`}).join('')}</div>
+ <div class="card" style="margin-top:16px"><h2 style="text-transform:capitalize">Financeiro · ${mesNome}</h2><div class="grid g4">
+  <div class="kpi"><span class="l">Recebido</span><span class="v" style="font-size:24px;color:var(--sage)">${brl(rec)}</span></div>
+  <div class="kpi"><span class="l">A receber</span><span class="v" style="font-size:24px">${brl(pend)}</span></div>
+  <div class="kpi"><span class="l">Consultas realizadas</span><span class="v" style="font-size:24px">${real}</span></div>
+  <div class="kpi"><span class="l">Faltas</span><span class="v" style="font-size:24px">${falt}</span></div></div></div>`}
+function formAppt(id,pid,date){const a=id?S.agenda.find(x=>x.id===id):{data:date||today(),hora:'09:00',pid:pid||UI.pid||'',tipo:'Retorno',modalidade:'Online',status:'Agendada',valor:'',pago:false};
+ if(!S.pacientes.length){toast('Cadastre uma paciente primeiro');return}
+ openModal(id?'Editar consulta':'Nova consulta',`<div class="form">${F({k:'pid',l:'Paciente',t:'select',w:'full',o:S.pacientes.map(p=>[p.id,p.nome]).sort((a,b)=>a[1].localeCompare(b[1]))},a.pid)}
+ ${F({k:'data',l:'Data',t:'date'},a.data)}${F({k:'hora',l:'Horário',t:'time'},a.hora)}
+ ${F({k:'tipo',l:'Tipo',t:'select',o:['Primeira consulta','Retorno','Acompanhamento','Reavaliação de exames','Consulta do casal']},a.tipo)}${F({k:'modalidade',l:'Modalidade',t:'select',o:['Online','Presencial']},a.modalidade)}
+ ${F({k:'status',l:'Status',t:'select',o:['Agendada','Realizada','Faltou','Cancelada']},a.status)}${F({k:'valor',l:'Valor (R$)',t:'number'},a.valor)}
+ <label class="chk full"><input type="checkbox" name="pago" ${a.pago?'checked':''}><span>Pagamento recebido</span></label>
+ ${F({k:'obs',l:'Observações',t:'textarea',w:'full'},a.obs)}</div>
+ ${id?`<div class="row" style="margin-top:10px"><button type="button" class="btn sm" onclick="closeModal();go('pac','${a.pid}','resumo')">Abrir ficha</button><button type="button" class="btn danger ghost sm" onclick="S.agenda=S.agenda.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir consulta</button></div>`:''}`,d=>{if(!d.pid||!d.data)return false;if(id)Object.assign(a,d);else S.agenda.push({id:uid(),...d});toast('Consulta salva')})}
+
+/* ============ MÉTODO ============ */
+function vProto(){return `<div class="top"><div><span class="eyebrow">O método</span><h1>${esc(S.settings.metodo).replace(/^(\S+)\s+(.*)$/,"$1 <em>$2</em>")}</h1><p>As fases do seu método. Cada paciente avança por elas, e o painel mostra quem está em cada etapa.</p></div><button class="btn pri" onclick="formFase()">+ Nova fase</button></div>
+ <div class="grid g2">${S.protocolo.map((f,i)=>{const ps=S.pacientes.filter(p=>p.fase===f.id);return `<div class="card" style="border-top:4px solid ${f.cor}"><div class="row between"><h2>${esc(f.nome)}</h2><span class="badge">${f.semanas} semanas</span></div>
+ <p><b>Objetivo:</b> ${esc(f.objetivo)}</p><p class="muted" style="white-space:pre-wrap">${esc(f.orientacoes)}</p>
+ <div class="row between" style="margin-top:10px"><div class="row" style="gap:4px">${ps.slice(0,6).map(p=>`<div class="avatar sm" title="${esc(p.nome)}" style="cursor:pointer" onclick="go('pac','${p.id}','resumo')">${initials(p.nome)}</div>`).join('')}<span class="small muted" style="margin-left:6px">${ps.length} paciente${ps.length!==1?'s':''}</span></div>
+ <div class="row"><button class="btn sm ghost" onclick="moveFase(${i},-1)">↑</button><button class="btn sm" onclick="formFase('${f.id}')">Editar</button></div></div></div>`}).join('')}</div>`}
+function moveFase(i,d){const r=S.protocolo;const j=i+d;if(j<0||j>=r.length)return;[r[i],r[j]]=[r[j],r[i]];save();render()}
+function formFase(id){const f=id?phase(id):{cor:'#A8834F',semanas:4};
+ openModal(id?'Editar fase':'Nova fase',`<div class="form">${F({k:'nome',l:'Nome da fase',w:'full'},f.nome)}${F({k:'semanas',l:'Duração (semanas)',t:'number'},f.semanas)}${F({k:'cor',l:'Cor',t:'color'},f.cor)}${F({k:'objetivo',l:'Objetivo',t:'textarea',w:'full'},f.objetivo)}${F({k:'orientacoes',l:'Orientações principais',t:'textarea',r:5,w:'full'},f.orientacoes)}</div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="if(S.pacientes.some(p=>p.fase==='${id}')){toast('Há pacientes nesta fase');return}S.protocolo=S.protocolo.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir fase</button>`:''}`,d=>{if(!d.nome)return false;if(id)Object.assign(f,d);else S.protocolo.push({id:uid(),...d})})}
+
+/* ============ ALIMENTOS ============ */
+function vFoods(){const q=UI.fq.toLowerCase();const groups=[...new Set(allFoods().map(f=>f.grupo))];
+ const list=allFoods().filter(f=>(!q||f.nome.toLowerCase().includes(q))&&(!UI.fg||f.grupo===UI.fg||f.tags.includes(UI.fg)));
+ return `<div class="top"><div><span class="eyebrow">Banco de alimentos</span><h1>Alimentos que <em>nutrem</em></h1><p>Base própria com valores por 100 g (aproximados da TACO/USDA) e marcação de nutrientes-chave da fertilidade.</p></div><button class="btn pri" onclick="formFood()">+ Cadastrar alimento</button></div>
+ <div class="card"><div class="row" style="margin-bottom:12px"><input id="fq" style="max-width:300px" placeholder="Buscar alimento…" value="${esc(UI.fq)}" oninput="UI.fq=this.value;clearTimeout(window._ft);window._ft=setTimeout(()=>{render();const i=$('#fq');i.focus();i.setSelectionRange(i.value.length,i.value.length)},250)">
+ <select style="max-width:240px" onchange="UI.fg=this.value;render()"><option value="">Todos</option><optgroup label="Grupo">${groups.map(g=>`<option ${UI.fg===g?'selected':''}>${g}</option>`).join('')}</optgroup><optgroup label="Nutriente-chave">${Object.entries(TAGS).map(([k,[l]])=>`<option value="${k}" ${UI.fg===k?'selected':''}>${l}</option>`).join('')}</optgroup></select><span class="small muted">${list.length} alimentos</span></div>
+ <div class="tbl-wrap"><table><thead><tr><th>Alimento</th><th>Grupo</th><th class="num">kcal</th><th class="num">Carb.</th><th class="num">Prot.</th><th class="num">Gord.</th><th class="num">Fibra</th><th>Destaques</th><th></th></tr></thead><tbody>
+ ${list.map(f=>`<tr><td><b>${esc(f.nome)}</b></td><td class="small muted">${esc(f.grupo)}</td><td class="num">${n0(f.kcal)}</td><td class="num">${n1(f.c)}</td><td class="num">${n1(f.p)}</td><td class="num">${n1(f.g)}</td><td class="num">${n1(f.f)}</td><td>${f.tags.map(tagHtml).join(' ')}</td><td class="num">${f.custom?`<button class="btn sm ghost" onclick="formFood('${f.id}')">Editar</button>`:''}</td></tr>`).join('')}
+ </tbody></table></div></div>`}
+function formFood(id){const f=id?S.alimentosCustom.find(x=>x.id===id):{grupo:'Outros',tags:[]};
+ openModal(id?'Editar alimento':'Cadastrar alimento',`<p class="small muted" style="margin-top:0">Valores por 100 g ou 100 ml.</p><div class="form">${F({k:'nome',l:'Nome',w:'full'},f.nome)}${F({k:'grupo',l:'Grupo',t:'select',o:[...new Set(FOODS.map(x=>x.grupo))]},f.grupo)}${F({k:'kcal',l:'Energia (kcal)',t:'number'},f.kcal)}${F({k:'c',l:'Carboidratos (g)',t:'number'},f.c)}${F({k:'p',l:'Proteínas (g)',t:'number'},f.p)}${F({k:'g',l:'Gorduras (g)',t:'number'},f.g)}${F({k:'f',l:'Fibras (g)',t:'number'},f.f)}
+ <div class="field full"><span>Nutrientes-chave</span><div class="checks">${Object.entries(TAGS).map(([k,[l]])=>`<label class="chk"><input type="checkbox" name="tags" value="${k}" data-multi ${f.tags.includes(k)?'checked':''}><span>${l}</span></label>`).join('')}</div></div></div>
+ ${id?`<button type="button" class="btn danger ghost sm" style="margin-top:10px" onclick="S.alimentosCustom=S.alimentosCustom.filter(x=>x.id!=='${id}');save();closeModal();render()">Excluir alimento</button>`:''}`,d=>{if(!d.nome)return false;['kcal','c','p','g','f'].forEach(k=>d[k]=+d[k]||0);if(id)Object.assign(f,d);else S.alimentosCustom.push({id:'c_'+uid(),custom:true,...d})})}
+
+/* ============ CONFIGURAÇÕES ============ */
+function vCfg(){const s=S.settings;return `<div class="top"><div><span class="eyebrow">Consultório</span><h1><em>Configurações</em></h1><p>Identidade do consultório e segurança dos dados.</p></div></div>
+ <div class="grid g2"><div class="card"><h2>Seus dados profissionais</h2><p class="small muted" style="margin-top:-6px">Aparecem no topo da plataforma e no plano impresso.</p>
+ <form id="cfgf" class="form">${F({k:'clinica',l:'Nome do consultório / marca'},s.clinica)}${F({k:'subtitulo',l:'Subtítulo'},s.subtitulo)}${F({k:'nutri',l:'Nome da nutricionista'},s.nutri)}${F({k:'crn',l:'CRN'},s.crn)}${F({k:'telefone',l:'Telefone / WhatsApp'},s.telefone)}${F({k:'instagram',l:'Instagram'},s.instagram)}${F({k:'metodo',l:'Nome do seu método',w:'full'},s.metodo)}</form>
+ <button class="btn pri" style="margin-top:14px" onclick="Object.assign(S.settings,readForm($('#cfgf')));save();render();toast('Dados salvos')">Salvar</button></div>
+ <div class="grid" style="align-content:start">
+  <div class="card"><h2>Backup</h2><p class="muted">Os dados ficam salvos apenas neste navegador, neste computador. Baixe um backup toda semana e guarde em local seguro (Google Drive, pendrive).</p>
+  <div class="row"><button class="btn pri" onclick="exportData()">Baixar backup</button><label class="btn">Restaurar backup<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label></div></div>
+  <div class="card"><h2>Dados de exemplo</h2><p class="muted">Pacientes fictícias para explorar a plataforma.</p>
+  <div class="row"><button class="btn" onclick="seed(true)">Carregar exemplos</button><button class="btn danger" onclick="clearDemo()">Remover exemplos</button></div></div>
+  <div class="card"><h2>Aparência</h2><div class="row"><button class="btn" onclick="setTheme('light')">Claro</button><button class="btn" onclick="setTheme('dark')">Escuro</button><button class="btn" onclick="setTheme('')">Automático</button></div></div>
+  <div class="card"><h2 style="color:var(--danger)">Apagar tudo</h2><p class="muted">Remove todas as pacientes, consultas e configurações deste navegador.</p><button class="btn danger" onclick="if(confirm('Apagar TODOS os dados? Baixe um backup antes.')){S=defaultState();S.seeded=true;save();render();toast('Dados apagados')}">Apagar todos os dados</button></div>
+ </div></div>`}
+function exportData(){const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup-${(S.settings.clinica||'florescer').toLowerCase().replace(/\W+/g,'-')}-${today()}.json`;a.click();toast('Backup baixado')}
+function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.pacientes)throw 0;if(!confirm(`Restaurar backup com ${d.pacientes.length} pacientes? Os dados atuais serão substituídos.`))return;S=Object.assign(defaultState(),d);save();render();toast('Backup restaurado')}catch(e){toast('Arquivo de backup inválido')}};r.readAsText(file)}
+function setTheme(t){try{t?localStorage.setItem(KEY+'_theme',t):localStorage.removeItem(KEY+'_theme')}catch(e){}t?document.documentElement.dataset.theme=t:delete document.documentElement.dataset.theme;render()}
+function clearDemo(){const ids=S.pacientes.filter(p=>p.demo).map(p=>p.id);S.pacientes=S.pacientes.filter(p=>!p.demo);S.agenda=S.agenda.filter(a=>!ids.includes(a.pid));save();render();toast('Exemplos removidos')}
+
+/* ============ DADOS DE EXEMPLO ============ */
+function seed(force){
+ if(S.seeded&&!force)return;const t=today();const D=n=>addDays(t,n);
+ const mk=(o)=>Object.assign({id:uid(),demo:true,avaliacoes:[],exames:[],planos:[],suplementos:[],evolucao:[],scores:[],ciclo:{registros:[],duracao:28,menstruacao:5}},o);
+ const sc=(vals,data)=>({id:uid(),data,resp:Object.fromEntries(vals.map((v,i)=>['q'+i,v]))});
+ const ana=mk({nome:'Ana Paula Ribeiro (exemplo)',nascimento:'1990-04-12',telefone:'(11) 90000-0001',parceiro:'Marcos',parceiroNasc:'1987-09-02',inicio:D(-75),fase:'f2',faseInicio:D(-47),status:'Em protocolo',origem:'Instagram',objetivo:'Regular o ciclo e engravidar naturalmente antes de partir para FIV.',
+  anamnese:{tentando:26,gestacoes:0,abortos:0,filhos:0,diagnosticos:['SOP','Resistência à insulina'],tratamentos:['Indução de ovulação'],fivs:0,regularidade:'Irregular',fluxo:'Moderado',sintomas:['Acne','Queda de cabelo','Inchaço/retenção','Fadiga','Ansiedade'],sono:6,atividade:'Leve (1–2x/sem)',estresse:8,agua:1.2,cafe:4,alcool:'Fim de semana',tabaco:'Não',intestino:'A cada 2 dias',rotina:'Pula café da manhã, almoço no restaurante por quilo, belisca doces à tarde, jantar com pão.',preferencias:'Ama frutas, frango, ovos',aversoes:'Não gosta de fígado nem de peixe cru',pIdade:38,pPeso:92,pAltura:178,pHabitos:'Ciclismo 3x/semana, notebook no colo, 3 cervejas no fim de semana.'},
+  avaliacoes:[{id:uid(),data:D(-75),peso:82.4,altura:165,cintura:94,quadril:108,gordura:38},{id:uid(),data:D(-45),peso:79.8,altura:165,cintura:90,quadril:106,gordura:36.5},{id:uid(),data:D(-15),peso:77.6,altura:165,cintura:87,quadril:105,gordura:35}],
+  exames:[{id:uid(),data:D(-80),v:{amh:6.8,fsh:5.2,lh:12.4,prl:18,testo:72,tsh:3.1,t4l:1.1,glic:96,ins:16,hba1c:5.7,vitd:22,ferr:28,b12:310,hcy:11,pcr:3.2,sp_conc:22,sp_mot:28,sp_morf:3}},{id:uid(),data:D(-10),v:{glic:88,ins:9,tsh:2.2,vitd:41,ferr:46,b12:520,hcy:8.4,pcr:1.4}}],
+  suplementos:[{id:uid(),nome:'Mio-inositol',dose:'',horario:'Manhã e noite',inicio:D(-70),para:'Paciente'},{id:uid(),nome:'Vitamina D3',dose:'',horario:'No almoço',inicio:D(-70),para:'Paciente'},{id:uid(),nome:'Metilfolato',dose:'',horario:'Manhã',inicio:D(-70),para:'Paciente'},{id:uid(),nome:'Coenzima Q10',dose:'',horario:'Almoço',inicio:D(-45),para:'Parceiro'}],
+  scores:[sc([1,0,0,1,0,1,0,1,0,0,1,0,1,0],D(-75)),sc([2,1,1,1,1,2,1,1,1,1,1,1,2,1],D(-45)),sc([2,2,2,1,1,2,1,2,2,1,1,2,2,1],D(-15))],
+  evolucao:[{id:uid(),data:D(-75),tipo:'Consulta',texto:'Primeira consulta. Ciclos de 35–50 dias, muita vontade de doce à tarde. Iniciada Fase 1.'},{id:uid(),data:D(-47),tipo:'Marco',texto:'Início da Fase 2 · Nutrir'},{id:uid(),data:D(-15),tipo:'Consulta',texto:'Ciclo veio com 33 dias! Menos inchaço, compulsão por doce reduziu. Ajustado lanche da tarde.'}],
+  ciclo:{duracao:33,menstruacao:5,registros:[{id:uid(),inicio:D(-71),obs:'Ciclo longo'},{id:uid(),inicio:D(-36),obs:'Cólica leve'},{id:uid(),inicio:D(-3),obs:''}]},
+  energia:{peso:77.6,altura:165,idade:age('1990-04-12'),sexo:'F',formula:'mifflin',af:1.375,ajuste:-250,pc:40,pp:28,pg:32},meta:{kcal:1650,c:165,p:115,g:59}});
+ ana.planos=[{id:uid(),nome:'Plano Fase 2',data:D(-45),fase:'f2',obs:'Beber 2,5 L de água por dia.\nPreferir vidro para aquecer alimentos.\nMastigar devagar e comer sem telas.',refeicoes:[
+  {nome:'Café da manhã',hora:'07:00',itens:[{f:'ovo',g:100,m:'2 unidades'},{f:'pao_int',g:50,m:'2 fatias'},{f:'abacate',g:40,m:'2 col. sopa'},{f:'morango',g:100,m:'1 xícara'}],obs:'Ovos podem virar omelete com espinafre.'},
+  {nome:'Lanche da manhã',hora:'10:00',itens:[{f:'iog_nat',g:170,m:'1 pote'},{f:'chia',g:10,m:'1 col. sopa'},{f:'cpara',g:5,m:'1 unidade'}],obs:''},
+  {nome:'Almoço',hora:'12:30',itens:[{f:'arr_int',g:100,m:'4 col. sopa'},{f:'fe_pre',g:90,m:'1 concha'},{f:'frango',g:120,m:'1 filé médio'},{f:'brocolis',g:80,m:'1 xícara'},{f:'rucula',g:30,m:'à vontade'},{f:'azeite',g:8,m:'1 col. sopa'}],obs:'Frango ↔ patinho ou sardinha.'},
+  {nome:'Lanche da tarde',hora:'16:00',itens:[{f:'maca',g:130,m:'1 unidade'},{f:'pasta_amend',g:15,m:'1 col. sopa'},{f:'choc70',g:10,m:'1 quadradinho'}],obs:''},
+  {nome:'Jantar',hora:'19:30',itens:[{f:'salmao',g:110,m:'1 posta'},{f:'bdoce',g:120,m:'1 unidade média'},{f:'abobrinha',g:100,m:'1 xícara'},{f:'azeite',g:5,m:'1 col. chá'}],obs:''},
+  {nome:'Ceia',hora:'21:30',itens:[{f:'kefir',g:150,m:'1 copo'}],obs:''}]}];
+ const ju=mk({nome:'Juliana Costa (exemplo)',nascimento:'1985-11-30',telefone:'(21) 90000-0002',parceiro:'Rafael',parceiroNasc:'1983-02-14',inicio:D(-210),fase:'f4',faseInicio:D(-20),status:'Gestante',origem:'Indicação médica',objetivo:'Melhorar a qualidade dos óvulos para a próxima FIV.',
+  anamnese:{tentando:48,abortos:2,gestacoes:2,diagnosticos:['Baixa reserva ovariana','Abortamento de repetição'],tratamentos:['FIV','Transferência de embrião congelado'],fivs:2,regularidade:'Regular',sono:7,atividade:'Moderada (3–4x/sem)',estresse:9},
+  avaliacoes:[{id:uid(),data:D(-210),peso:64,altura:162,cintura:76,quadril:98},{id:uid(),data:D(-120),peso:62.5,altura:162,cintura:73,quadril:97}],
+  exames:[{id:uid(),data:D(-215),v:{amh:0.6,fsh:12.1,tsh:2.0,vitd:28,ferr:35,hcy:10.2,glic:84,ins:6}}],
+  scores:[sc([1,1,1,1,1,1,1,1,1,1,1,1,0,0],D(-210)),sc([2,2,2,2,2,2,2,2,1,2,2,2,2,1],D(-60))],
+  resultado:{data:D(-20),beta:420,forma:'FIV',obs:'Depois de 2 FIVs sem sucesso, a terceira deu certo. Me sinto outra pessoa.'},
+  evolucao:[{id:uid(),data:D(-20),tipo:'Marco',texto:'Beta positivo! (FIV). Depois de 2 FIVs sem sucesso, a terceira deu certo.'}]});
+ const ca=mk({nome:'Carla Mendes (exemplo)',nascimento:'1993-07-08',telefone:'(31) 90000-0003',parceiro:'Thiago',inicio:D(-10),fase:'f1',faseInicio:D(-10),status:'Avaliação inicial',origem:'Indicação de paciente',
+  anamnese:{tentando:14,diagnosticos:['Endometriose'],tratamentos:[],regularidade:'Regular',sintomas:['Cólica forte','Gases/distensão','Fadiga']},
+  avaliacoes:[{id:uid(),data:D(-10),peso:58,altura:168,cintura:70,quadril:94}],ciclo:{duracao:27,menstruacao:6,registros:[{id:uid(),inicio:D(-12),obs:'Cólica 8/10'}]}});
+ S.pacientes.push(ana,ju,ca);
+ S.agenda.push(
+  {id:uid(),pid:ana.id,data:D(-75),hora:'09:00',tipo:'Primeira consulta',modalidade:'Online',status:'Realizada',valor:450,pago:true},
+  {id:uid(),pid:ana.id,data:D(-15),hora:'09:00',tipo:'Retorno',modalidade:'Online',status:'Realizada',valor:250,pago:true},
+  {id:uid(),pid:ana.id,data:D(2),hora:'10:30',tipo:'Reavaliação de exames',modalidade:'Online',status:'Agendada',valor:250,pago:false},
+  {id:uid(),pid:ca.id,data:D(-10),hora:'14:00',tipo:'Primeira consulta',modalidade:'Presencial',status:'Realizada',valor:450,pago:true},
+  {id:uid(),pid:ca.id,data:D(0),hora:'16:00',tipo:'Retorno',modalidade:'Presencial',status:'Agendada',valor:250,pago:false},
+  {id:uid(),pid:ju.id,data:D(5),hora:'11:00',tipo:'Acompanhamento',modalidade:'Online',status:'Agendada',valor:250,pago:true});
+ S.seeded=true;save();if(force){render();toast('Exemplos carregados')}
+}
+
+/* ============ INÍCIO ============ */
+try{const th=localStorage.getItem(KEY+'_theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
+seed(false);
+render();
+</script>
+</body>
+</html>
