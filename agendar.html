@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agende sua consulta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+:root{--bg:#F3EEE6;--surface:#FBF8F3;--surface2:#EFE8DD;--ink:#1A1714;--muted:#7B7166;--line:#E2D8CA;--brand:#A8834F;--gold:#B8925A;--danger:#A9473A;--danger-soft:#F4E1DC;--night:#15120F;--night-ink:#F1E9DC;--night-muted:#A0968A;--night-line:#2F2A23;--serif:'Playfair Display',Georgia,serif}
+@media (prefers-color-scheme:dark){:root{--bg:#12100D;--surface:#1B1814;--surface2:#24201B;--ink:#EFE7DA;--muted:#9C9284;--line:#332D26;--brand:#C9A46B;--gold:#D1AE72;--danger:#D98274;--danger-soft:#3A231F;--night:#0B0907}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0}
+em{font-style:italic;color:var(--brand)}
+.eyebrow{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--brand);font-weight:600;display:block;margin-bottom:10px}
+header{background:radial-gradient(120% 160% at 100% 0%,rgba(184,146,90,.25),transparent 55%),var(--night);color:var(--night-ink);padding:44px 20px 50px;text-align:center}
+.mark{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);margin:0 auto 14px}
+.brand{font-family:var(--serif);letter-spacing:.3em;text-transform:uppercase;font-size:18px}
+.brand-sub{color:var(--gold);font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-top:6px}
+header h1{font-size:40px;line-height:1.15;margin-top:30px}
+header h1 em{color:var(--gold)}
+header p{color:var(--night-muted);max-width:520px;margin:12px auto 0}
+main{max-width:760px;margin:-26px auto 60px;padding:0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px}
+.step{margin-bottom:30px}
+.step:last-child{margin-bottom:0}
+.step-h{display:flex;gap:14px;align-items:baseline;margin-bottom:16px}
+.step-n{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:22px}
+.step-h h2{font-size:22px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:16px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:.15s}
+.opt:hover{border-color:var(--muted)}
+.opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.opt b{display:block;font-family:var(--serif);font-weight:500;font-size:17px}
+.opt span{font-size:12px;opacity:.75}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.day{flex:none;width:76px;border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:10px 6px;text-align:center;cursor:pointer;font:inherit;color:inherit}
+.day small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.day b{display:block;font-family:var(--serif);font-size:24px;font-weight:500;line-height:1.2}
+.day.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}.day.on small{color:var(--gold)}
+.hours{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:14px}
+.hour{border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:10px 0;cursor:pointer;font:inherit;color:inherit;font-weight:600;font-variant-numeric:tabular-nums}
+.hour:hover{border-color:var(--gold)}
+.hour.on{background:var(--gold);border-color:var(--gold);color:#15120F}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+label.f{display:flex;flex-direction:column;gap:6px}
+label.f>span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+input,textarea{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:11px 12px;font:inherit;color:inherit;width:100%;outline:none}
+input:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(168,131,79,.15)}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.consent input{width:auto;margin-top:3px;accent-color:var(--brand)}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:15px 24px;border-radius:2px;cursor:pointer;font:inherit;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;width:100%;display:flex;gap:10px;justify-content:center;align-items:center}
+.btn::after{content:"→";color:var(--gold);font-size:16px;letter-spacing:0}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.summary{background:var(--surface2);border-left:2px solid var(--gold);padding:12px 16px;font-size:14px;margin-bottom:16px}
+.err{background:var(--danger-soft);color:var(--danger);padding:12px 16px;border-radius:2px;font-size:14px;margin-top:14px}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.done h2{font-size:34px;margin:6px 0 10px}
+.done table{width:100%;border-collapse:collapse;margin:22px 0;text-align:left}
+.done td{padding:11px 0;border-bottom:1px solid var(--line)}
+.done td:first-child{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);width:40%}
+.spinner{width:28px;height:28px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:s 1s linear infinite;margin:30px auto}
+@keyframes s{to{transform:rotate(360deg)}}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 40px}
+@media(max-width:600px){header h1{font-size:30px}.card{padding:22px 18px}.form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 21v-8"/><path d="M12 13c0-4 3-7 7-7 0 4-3 7-7 7z"/><path d="M12 15c0-3.3-2.7-6-6-6 0 3.3 2.7 6 6 6z"/></svg></div>
+  <div class="brand" id="h-brand">Florescer</div>
+  <div class="brand-sub" id="h-sub">Nutrição Fértil</div>
+  <h1>Agende sua <em>consulta</em></h1>
+  <p id="h-nutri">Escolha o melhor dia e horário. A confirmação chega no seu e-mail e na sua Google Agenda.</p>
+</header>
+<main><div class="card" id="app"><div class="spinner"></div></div></main>
+<footer id="foot"></footer>
+
+<script>
+const API=window.FLORESCER_API||'';
+const DEMO=new URLSearchParams(location.search).has('demo');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SEM=['dom','seg','ter','qua','qui','sex','sáb'],SEMX=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'],MESX=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const pd=s=>new Date(s+'T12:00:00');
+const longDate=s=>{const d=pd(s);return `${SEMX[d.getDay()]}, ${d.getDate()} de ${MESX[d.getMonth()]}`};
+const st={cfg:null,dias:[],tipo:'',mod:'',data:'',hora:'',sending:false,err:''};
+
+async function api(action,body){
+  if(DEMO)return demo(action,body);
+  const r=body?await fetch(API,{method:'POST',body:JSON.stringify({action,...body})}):await fetch(API+'?action='+action);
+  const j=await r.json();if(!j.ok)throw new Error(j.error||'Erro inesperado');return j;
+}
+function demo(action,body){return new Promise(res=>setTimeout(()=>{
+  if(action==='config')res({ok:true,clinica:'Florescer',subtitulo:'Nutrição Fértil',nutri:'Nome da Nutricionista',crn:'CRN-0 00000',agenda:{ativo:true,tipos:['Primeira consulta','Retorno'],modalidades:['Online','Presencial'],duracao:60,endereco:'Rua Exemplo, 123'}});
+  else if(action==='slots'){const dias=[];for(let i=1;i<20;i++){const d=new Date();d.setDate(d.getDate()+i);if(d.getDay()%6===0)continue;const s=d.toISOString().slice(0,10);dias.push({data:s,horas:['09:00','10:15','11:30','13:00','14:15','15:30','16:45'].filter((_,k)=>(k+i)%3)})}res({ok:true,ativo:true,dias})}
+  else res({ok:true,agendamento:{data:body.data,hora:body.hora,tipo:body.tipo,modalidade:body.modalidade,meet:body.modalidade==='Online'?'https://meet.google.com/abc-defg-hij':'',local:body.modalidade==='Presencial'?'Rua Exemplo, 123':'',duracao:60}});
+},400))}
+
+async function init(){
+  if(!API&&!DEMO){$('#app').innerHTML='<p class="center muted">O agendamento online está sendo configurado. Volte em breve ou fale pelo WhatsApp.</p>';return}
+  try{
+    const [c,s]=await Promise.all([api('config'),api('slots')]);
+    st.cfg=c;st.dias=s.dias||[];
+    $('#h-brand').textContent=c.clinica||'Florescer';$('#h-sub').textContent=c.subtitulo||'';
+    document.title='Agende sua consulta · '+(c.clinica||'Florescer');
+    if(c.nutri&&!c.nutri.startsWith('Nome da'))$('#h-nutri').innerHTML=`Com ${esc(c.nutri)}${c.crn?' · '+esc(c.crn):''}.<br>A confirmação chega no seu e-mail e na sua Google Agenda.`;
+    $('#foot').innerHTML=[c.telefone&&'WhatsApp '+esc(c.telefone),c.instagram&&esc(c.instagram)].filter(Boolean).join(' · ');
+    if(!c.agenda.ativo||!s.ativo){$('#app').innerHTML='<p class="center muted">O agendamento online está pausado no momento. Fale pelo WhatsApp para marcar sua consulta.</p>';return}
+    st.tipo=c.agenda.tipos[0];st.mod=c.agenda.modalidades[0];st.data=(st.dias[0]||{}).data||'';
+    render();
+  }catch(e){$('#app').innerHTML=`<p class="center muted">Não foi possível carregar os horários agora.<br><small>${esc(e.message)}</small></p>`}
+}
+function render(){
+  const a=st.cfg.agenda;const dia=st.dias.find(d=>d.data===st.data);
+  $('#app').innerHTML=`
+  <div class="step"><div class="step-h"><span class="step-n">01</span><h2>Tipo de consulta</h2></div>
+   <div class="opts">${a.tipos.map((t,i)=>`<button class="opt ${t===st.tipo?'on':''}" onclick="st.tipo=st.cfg.agenda.tipos[${i}];render()"><b>${esc(t)}</b><span>${a.duracao} minutos</span></button>`).join('')}</div>
+   ${a.modalidades.length>1?`<div class="opts" style="margin-top:10px">${a.modalidades.map((m,i)=>`<button class="opt ${m===st.mod?'on':''}" onclick="st.mod=st.cfg.agenda.modalidades[${i}];render()"><b>${esc(m)}</b><span>${m==='Online'?'Videochamada pelo Google Meet':esc(a.endereco||'No consultório')}</span></button>`).join('')}</div>`:''}
+  </div>
+  <div class="step"><div class="step-h"><span class="step-n">02</span><h2>Dia e <em>horário</em></h2></div>
+   ${st.dias.length?`<div class="days">${st.dias.map(d=>{const x=pd(d.data);return `<button class="day ${d.data===st.data?'on':''}" onclick="st.data='${d.data}';st.hora='';render()"><small>${SEM[x.getDay()]}</small><b>${x.getDate()}</b><small>${MES[x.getMonth()]}</small></button>`}).join('')}</div>
+   <div class="hours">${(dia?.horas||[]).map(h=>`<button class="hour ${h===st.hora?'on':''}" onclick="st.hora='${h}';render();document.getElementById('dados').scrollIntoView({behavior:'smooth'})">${h}</button>`).join('')}</div>`:'<p class="muted">Não há horários livres nos próximos dias. Fale pelo WhatsApp, por favor.</p>'}
+  </div>
+  <div class="step" id="dados"><div class="step-h"><span class="step-n">03</span><h2>Seus dados</h2></div>
+   ${st.hora?`<div class="summary"><b>${esc(st.tipo)}</b> · ${esc(st.mod)}<br>${longDate(st.data)} às <b>${st.hora}</b></div>`:'<p class="muted" style="margin-top:0">Escolha um horário acima para continuar.</p>'}
+   <form class="form" id="f" onsubmit="event.preventDefault();enviar()">
+    <label class="f full"><span>Nome completo</span><input name="nome" required autocomplete="name"></label>
+    <label class="f"><span>E-mail</span><input name="email" type="email" required autocomplete="email" placeholder="de preferência Gmail"></label>
+    <label class="f"><span>WhatsApp com DDD</span><input name="telefone" required autocomplete="tel" placeholder="(00) 00000-0000"></label>
+    <label class="f"><span>Data de nascimento</span><input name="nascimento" type="date"></label>
+    <label class="f"><span>Há quanto tempo tenta engravidar?</span><input name="tempo" placeholder="ex.: 1 ano e meio"></label>
+    <label class="f full"><span>Algo que queira contar antes da consulta? (opcional)</span><textarea name="obs" rows="3"></textarea></label>
+    <label class="consent full"><input type="checkbox" name="consentimento" required><span>Autorizo o uso destes dados para agendamento e contato sobre a consulta, conforme a LGPD.</span></label>
+    <div class="full"><button class="btn" ${!st.hora||st.sending?'disabled':''}>${st.sending?'Confirmando…':'Confirmar agendamento'}</button>${st.err?`<div class="err">${esc(st.err)}</div>`:''}</div>
+   </form>
+  </div>`;
+  if(st._form){const f=$('#f');Object.entries(st._form).forEach(([k,v])=>{const i=f.elements[k];if(!i)return;i.type==='checkbox'?i.checked=v:i.value=v})}
+  $('#f').oninput=()=>{st._form=readF()};
+}
+function readF(){const f=$('#f');const o={};[...f.elements].forEach(i=>{if(i.name)o[i.name]=i.type==='checkbox'?i.checked:i.value});return o}
+async function enviar(){
+  const d=readF();st._form=d;st.err='';st.sending=true;render();
+  try{
+    const obs=[d.tempo&&'Tentando engravidar há: '+d.tempo,d.obs].filter(Boolean).join('\n');
+    const r=await api('book',{nome:d.nome,email:d.email,telefone:d.telefone,nascimento:d.nascimento,obs,consentimento:d.consentimento,tipo:st.tipo,modalidade:st.mod,data:st.data,hora:st.hora});
+    done(r.agendamento,d);
+  }catch(e){
+    st.sending=false;st.err=e.message;
+    if(/ocupado/.test(e.message)){try{st.dias=(await api('slots')).dias||[];st.hora=''}catch(x){}}
+    render();
+  }
+}
+function done(a,d){
+  window.scrollTo({top:0,behavior:'smooth'});
+  $('#app').innerHTML=`<div class="done center"><span class="eyebrow">Tudo certo</span><h2>Consulta <em>confirmada</em></h2>
+  <p class="muted">Obrigada, ${esc(d.nome.split(' ')[0])}! Enviamos a confirmação para <b>${esc(d.email)}</b> e o convite para a sua Google Agenda.</p>
+  <table><tr><td>Consulta</td><td>${esc(a.tipo)}</td></tr><tr><td>Quando</td><td>${longDate(a.data)} às ${a.hora}</td></tr><tr><td>Duração</td><td>${a.duracao} minutos</td></tr><tr><td>Modalidade</td><td>${esc(a.modalidade)}</td></tr>
+  ${a.meet?`<tr><td>Link da chamada</td><td><a href="${esc(a.meet)}" style="color:var(--brand)">${esc(a.meet)}</a></td></tr>`:''}${a.local?`<tr><td>Endereço</td><td>${esc(a.local)}</td></tr>`:''}</table>
+  <p class="muted" style="font-size:13px">Não recebeu o e-mail? Confira a caixa de spam ou promoções.</p></div>`;
+}
+init();
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="config.js"></script>
 <style>
 :root{
   --bg:#F3EEE6;--surface:#FBF8F3;--surface2:#EFE8DD;--ink:#1A1714;--muted:#7B7166;--line:#E2D8CA;
@@ -231,7 +232,7 @@ canvas{max-width:100%}
       <div><b id="brand-name">Florescer</b><small id="brand-sub">Nutrição Fértil</small></div>
     </div>
     <div id="nav"></div>
-    <div class="side-foot">Os dados ficam salvos neste navegador.<br>Faça backup em Configurações.</div>
+    <div class="side-foot" id="sync"></div>
   </aside>
   <main id="main"></main>
 </div>
@@ -459,9 +460,68 @@ function defaultState(){return{
  ],
  pacientes:[],agenda:[],alimentosCustom:[],seeded:false
 }}
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.pacientes){const old={'#C98B73':'#A8834F','#5F8370':'#6E7B5C','#B8913F':'#3B342C','#4A7FA7':'#B8925A'};(s.protocolo||[]).forEach(f=>{if(old[f.cor])f.cor=old[f.cor]});return Object.assign(defaultState(),s)}}catch(e){}return defaultState()}
+const AGENDA_PADRAO={ativo:true,dias:['1','2','3','4','5'],inicio:'09:00',fim:'18:00',pausaIni:'12:00',pausaFim:'13:00',duracao:60,intervalo:15,antecedencia:24,janela:30,tipos:['Primeira consulta','Retorno'],modalidades:['Online','Presencial'],endereco:'',mensagem:''};
+function normalize(s){s.settings=Object.assign(defaultState().settings,s.settings||{});s.settings.agendaOnline=Object.assign({},AGENDA_PADRAO,s.settings.agendaOnline||{});s.bookingsImportados=s.bookingsImportados||[];return s}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.pacientes){const old={'#C98B73':'#A8834F','#5F8370':'#6E7B5C','#B8913F':'#3B342C','#4A7FA7':'#B8925A'};(s.protocolo||[]).forEach(f=>{if(old[f.cor])f.cor=old[f.cor]});return normalize(Object.assign(defaultState(),s))}}catch(e){}return normalize(defaultState())}
 let S=load();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador')}}
+function localSave(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador')}}
+function save(){localSave();cloudSchedule()}
+
+/* ============ NUVEM (Google Drive via Apps Script) ============ */
+const PAGES_URL='https://admmateusalmeida-hue.github.io/florescer-nutricao-fertil/';
+const C={url:'',key:'',version:0,timer:null,saving:false,dirty:false,status:'local',at:''};
+try{const c=JSON.parse(localStorage.getItem(KEY+'_cloud')||'{}');C.url=c.url||window.FLORESCER_API||'';C.key=c.key||'';C.version=+c.version||0}catch(e){C.url=window.FLORESCER_API||''}
+const cloudOn=()=>!!(C.url&&C.key);
+const hhmm=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+function cloudPersist(){try{localStorage.setItem(KEY+'_cloud',JSON.stringify({url:C.url,key:C.key,version:C.version}))}catch(e){}}
+async function cloudCall(action,body={}){
+ const r=await fetch(C.url,{method:'POST',body:JSON.stringify({action,key:C.key,...body})});
+ const j=await r.json();if(!j.ok&&!j.conflict)throw new Error(j.error||'Erro na nuvem');return j}
+function syncUI(){const el=$('#sync');if(!el)return;el.innerHTML={
+ local:'Os dados ficam salvos só neste navegador.<br>Conecte o Google Drive em Configurações.',
+ ok:`<span style="color:var(--gold)">●</span> Salvo no Google Drive${C.at?' · '+C.at:''}`,
+ saving:'<span style="color:var(--gold)">○</span> Salvando no Google Drive…',
+ erro:'<span style="color:var(--danger)">●</span> Sem conexão com a nuvem.<br>Tentando de novo em instantes…'}[cloudOn()?C.status:'local']}
+function cloudSchedule(){if(!cloudOn())return;C.dirty=true;C.status='saving';syncUI();clearTimeout(C.timer);C.timer=setTimeout(cloudSave,1200)}
+async function cloudSave(){
+ if(!cloudOn())return;
+ if(C.saving){clearTimeout(C.timer);C.timer=setTimeout(cloudSave,1500);return}
+ C.saving=true;C.dirty=false;
+ try{
+  const j=await cloudCall('save',{state:S,baseVersion:C.version});
+  if(j.conflict){C.saving=false;alert('Os dados foram alterados em outro computador. A plataforma vai carregar a versão mais recente do Google Drive.');await cloudLoad(true);return}
+  C.version=j.version;cloudPersist();if(!C.dirty){C.status='ok';C.at=hhmm()}
+ }catch(e){C.status='erro';C.dirty=true;clearTimeout(C.timer);C.timer=setTimeout(cloudSave,10000)}
+ C.saving=false;syncUI()}
+async function cloudLoad(force){
+ const j=await cloudCall('load');
+ if(!j.state||!Array.isArray(j.state.pacientes)){const r=await cloudCall('save',{state:S,force:true});C.version=r.version;cloudPersist();toast('Seus dados foram enviados para o Google Drive')}
+ else if(force||j.version!==C.version){S=normalize(Object.assign(defaultState(),j.state));C.version=j.version;cloudPersist();localSave();force=true}
+ const n=importBookings(j.bookings||[]);
+ if(!C.dirty){C.status='ok';C.at=hhmm()}
+ syncUI();if(force||n)render()}
+function cloudRefresh(){
+ if(!cloudOn()||C.dirty||C.saving)return;
+ if(!$('#modal').classList.contains('hidden'))return;
+ const ae=document.activeElement;if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName))return;
+ cloudLoad(false).catch(()=>{C.status='erro';syncUI()})}
+async function cloudConnect(){
+ const d=readForm($('#cloudf'));C.url=(d.url||'').trim();C.key=(d.key||'').trim();
+ if(!C.url||!C.key){toast('Informe a URL e a chave de acesso');return}
+ try{toast('Conectando…');await cloudCall('ping');cloudPersist();C.version=-1;await cloudLoad(true);toast('Conectado ao Google Drive')}
+ catch(e){C.key='';cloudPersist();alert('Não foi possível conectar: '+e.message)}}
+function cloudDisconnect(){if(!confirm('Desconectar este navegador do Google Drive? Os dados continuam salvos no Drive.'))return;C.key='';cloudPersist();syncUI();render()}
+function importBookings(list){
+ const novos=list.filter(b=>!S.bookingsImportados.includes(b.id));if(!novos.length)return 0;
+ novos.forEach(b=>{
+  const tel=(b.telefone||'').replace(/\D/g,'').slice(-9);
+  let p=S.pacientes.find(x=>(x.email&&x.email.toLowerCase()===b.email)||(tel.length===9&&(x.telefone||'').replace(/\D/g,'').endsWith(tel)));
+  if(!p){p={id:uid(),nome:b.nome,email:b.email,telefone:b.telefone,nascimento:b.nascimento||'',status:'Avaliação inicial',origem:'Agendamento online',inicio:b.data,fase:S.protocolo[0]?.id,faseInicio:b.data,objetivo:'',anamnese:{},avaliacoes:[],exames:[],planos:[],suplementos:[],evolucao:[],scores:[],ciclo:{registros:[]}};S.pacientes.push(p)}
+  else if(!p.email)p.email=b.email;
+  S.agenda.push({id:uid(),pid:p.id,data:b.data,hora:b.hora,tipo:b.tipo,modalidade:b.modalidade,status:'Agendada',valor:'',pago:false,obs:['Agendado pelo site',b.obs,b.meet&&'Google Meet: '+b.meet].filter(Boolean).join('\n'),bookingId:b.id,meet:b.meet||''});
+  (p.evolucao=p.evolucao||[]).push({id:uid(),data:(b.criadoEm||'').slice(0,10)||today(),tipo:'Mensagem',texto:`Agendou pelo site: ${b.tipo} (${b.modalidade}) em ${fd(b.data)} às ${b.hora}.${b.obs?'\n'+b.obs:''}`});
+  S.bookingsImportados.push(b.id)});
+ save();toast(`${novos.length} novo${novos.length>1?'s':''} agendamento${novos.length>1?'s':''} pelo site`);return novos.length}
 const UI={view:'dash',pid:null,tab:'resumo',planId:null,week:0,q:'',st:'',fq:'',fg:''};
 const P=id=>S.pacientes.find(p=>p.id===id);
 const phase=id=>S.protocolo.find(f=>f.id===id);
@@ -946,17 +1006,47 @@ function formFood(id){const f=id?S.alimentosCustom.find(x=>x.id===id):{grupo:'Ou
 function vCfg(){const s=S.settings;return `<div class="top"><div><span class="eyebrow">Consultório</span><h1><em>Configurações</em></h1><p>Identidade do consultório e segurança dos dados.</p></div></div>
  <div class="grid g2"><div class="card"><h2>Seus dados profissionais</h2><p class="small muted" style="margin-top:-6px">Aparecem no topo da plataforma e no plano impresso.</p>
  <form id="cfgf" class="form">${F({k:'clinica',l:'Nome do consultório / marca'},s.clinica)}${F({k:'subtitulo',l:'Subtítulo'},s.subtitulo)}${F({k:'nutri',l:'Nome da nutricionista'},s.nutri)}${F({k:'crn',l:'CRN'},s.crn)}${F({k:'telefone',l:'Telefone / WhatsApp'},s.telefone)}${F({k:'instagram',l:'Instagram'},s.instagram)}${F({k:'metodo',l:'Nome do seu método',w:'full'},s.metodo)}</form>
- <button class="btn pri" style="margin-top:14px" onclick="Object.assign(S.settings,readForm($('#cfgf')));save();render();toast('Dados salvos')">Salvar</button></div>
+ <button class="btn pri" style="margin-top:14px" onclick="Object.assign(S.settings,readForm($('#cfgf')));save();render();toast('Dados salvos')">Salvar</button>
+ ${vAgendaOnline()}</div>
  <div class="grid" style="align-content:start">
-  <div class="card"><h2>Backup</h2><p class="muted">Os dados ficam salvos apenas neste navegador, neste computador. Baixe um backup toda semana e guarde em local seguro (Google Drive, pendrive).</p>
+  <div class="card"><span class="eyebrow">Google Drive</span><h2>Dados na <em>nuvem</em></h2>
+  ${cloudOn()?`<div class="alert good">● <span>Conectado. Tudo o que você cadastra é salvo automaticamente no seu Google Drive, com backup diário dos últimos 30 dias.</span></div>
+  <div class="row"><button class="btn" onclick="cloudLoad(true).then(()=>toast('Dados atualizados')).catch(e=>alert(e.message))">Atualizar agora</button><button class="btn ghost danger" onclick="cloudDisconnect()">Desconectar este navegador</button></div>`
+  :`<p class="muted">Conecte para guardar as pacientes no seu Google Drive e acessar de qualquer computador. Veja o guia de instalação no GitHub.</p>
+  <form id="cloudf" class="form" onsubmit="event.preventDefault();cloudConnect()">${F({k:'url',l:'URL da API (termina em /exec)',w:'full'},C.url)}${F({k:'key',l:'Chave de acesso',t:'password',w:'full'},'')}</form>
+  <button class="btn pri" style="margin-top:12px" onclick="cloudConnect()">Conectar</button>`}</div>
+  <div class="card"><h2>Backup manual</h2><p class="muted">${cloudOn()?'Além do backup automático no Drive, você pode baixar uma cópia quando quiser.':'Sem a nuvem, os dados ficam só neste navegador. Baixe um backup toda semana e guarde em local seguro.'}</p>
   <div class="row"><button class="btn pri" onclick="exportData()">Baixar backup</button><label class="btn">Restaurar backup<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label></div></div>
   <div class="card"><h2>Dados de exemplo</h2><p class="muted">Pacientes fictícias para explorar a plataforma.</p>
   <div class="row"><button class="btn" onclick="seed(true)">Carregar exemplos</button><button class="btn danger" onclick="clearDemo()">Remover exemplos</button></div></div>
   <div class="card"><h2>Aparência</h2><div class="row"><button class="btn" onclick="setTheme('light')">Claro</button><button class="btn" onclick="setTheme('dark')">Escuro</button><button class="btn" onclick="setTheme('')">Automático</button></div></div>
-  <div class="card"><h2 style="color:var(--danger)">Apagar tudo</h2><p class="muted">Remove todas as pacientes, consultas e configurações deste navegador.</p><button class="btn danger" onclick="if(confirm('Apagar TODOS os dados? Baixe um backup antes.')){S=defaultState();S.seeded=true;save();render();toast('Dados apagados')}">Apagar todos os dados</button></div>
+  <div class="card"><h2 style="color:var(--danger)">Apagar tudo</h2><p class="muted">Remove todas as pacientes, consultas e configurações deste navegador.</p><button class="btn danger" onclick="if(confirm('Apagar TODOS os dados? Baixe um backup antes.')){S=normalize(defaultState());S.seeded=true;save();render();toast('Dados apagados')}">Apagar todos os dados</button></div>
  </div></div>`}
+const DIAS_SEM=[['1','Seg'],['2','Ter'],['3','Qua'],['4','Qui'],['5','Sex'],['6','Sáb'],['7','Dom']];
+function linkAgendar(){return location.protocol.startsWith('http')?new URL('agendar.html',location.href).href:PAGES_URL+'agendar.html'}
+function vAgendaOnline(){const a=S.settings.agendaOnline;const link=linkAgendar();
+ return `<div style="margin-top:28px;padding-top:22px;border-top:1px solid var(--line)"><span class="eyebrow">Agendamento online</span><h2>A paciente marca <em>sozinha</em></h2>
+ <p class="small muted" style="margin-top:-6px">Ela escolhe o horário no link abaixo, recebe a confirmação por e-mail e o convite na Google Agenda. Os horários já ocupados na sua Google Agenda e na plataforma ficam bloqueados.</p>
+ ${cloudOn()?'':'<div class="alert warn">⏳ <span>Só funciona depois de conectar o Google Drive (ao lado).</span></div>'}
+ <div class="row" style="margin:6px 0 16px;flex-wrap:nowrap"><input readonly value="${esc(link)}" onclick="this.select()"><button class="btn sm" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar</button><a class="btn sm" href="${link}" target="_blank" rel="noopener">Abrir</a></div>
+ <form id="agf" class="form">
+  <label class="chk full"><input type="checkbox" name="ativo" ${a.ativo?'checked':''}><span>Agendamento online ativo</span></label>
+  <div class="field full"><span>Dias de atendimento</span><div class="checks">${DIAS_SEM.map(([v,l])=>`<label class="chk"><input type="checkbox" name="dias" value="${v}" data-multi ${a.dias.includes(v)?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
+  ${F({k:'inicio',l:'Início do atendimento',t:'time'},a.inicio)}${F({k:'fim',l:'Fim do atendimento',t:'time'},a.fim)}
+  ${F({k:'pausaIni',l:'Pausa (início)',t:'time'},a.pausaIni)}${F({k:'pausaFim',l:'Pausa (fim)',t:'time'},a.pausaFim)}
+  ${F({k:'duracao',l:'Duração da consulta (min)',t:'number'},a.duracao)}${F({k:'intervalo',l:'Intervalo entre consultas (min)',t:'number'},a.intervalo)}
+  ${F({k:'antecedencia',l:'Antecedência mínima (horas)',t:'number'},a.antecedencia)}${F({k:'janela',l:'Mostrar horários dos próximos (dias)',t:'number'},a.janela)}
+  ${F({k:'tiposTxt',l:'Tipos de consulta oferecidos (um por linha)',t:'textarea',w:'full'},a.tipos.join('\n'))}
+  <div class="field full"><span>Modalidades</span><div class="checks">${['Online','Presencial'].map(m=>`<label class="chk"><input type="checkbox" name="modalidades" value="${m}" data-multi ${a.modalidades.includes(m)?'checked':''}><span>${m}</span></label>`).join('')}</div></div>
+  ${F({k:'endereco',l:'Endereço do consultório (presencial)',w:'full'},a.endereco)}
+  ${F({k:'mensagem',l:'Mensagem extra no e-mail de confirmação',t:'textarea',w:'full',ph:'Ex.: traga seus últimos exames; chegue 10 minutos antes.'},a.mensagem)}
+ </form>
+ <button class="btn pri" style="margin-top:14px" onclick="saveAgendaOnline()">Salvar agenda online</button></div>`}
+function saveAgendaOnline(){const d=readForm($('#agf'));d.tipos=String(d.tiposTxt||'').split('\n').map(x=>x.trim()).filter(Boolean);delete d.tiposTxt;
+ if(!d.tipos.length){toast('Informe ao menos um tipo de consulta');return}if(!d.modalidades.length){toast('Escolha ao menos uma modalidade');return}
+ Object.assign(S.settings.agendaOnline,d);save();render();toast('Agenda online salva')}
 function exportData(){const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup-${(S.settings.clinica||'florescer').toLowerCase().replace(/\W+/g,'-')}-${today()}.json`;a.click();toast('Backup baixado')}
-function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.pacientes)throw 0;if(!confirm(`Restaurar backup com ${d.pacientes.length} pacientes? Os dados atuais serão substituídos.`))return;S=Object.assign(defaultState(),d);save();render();toast('Backup restaurado')}catch(e){toast('Arquivo de backup inválido')}};r.readAsText(file)}
+function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.pacientes)throw 0;if(!confirm(`Restaurar backup com ${d.pacientes.length} pacientes? Os dados atuais serão substituídos.`))return;S=normalize(Object.assign(defaultState(),d));save();render();toast('Backup restaurado')}catch(e){toast('Arquivo de backup inválido')}};r.readAsText(file)}
 function setTheme(t){try{t?localStorage.setItem(KEY+'_theme',t):localStorage.removeItem(KEY+'_theme')}catch(e){}t?document.documentElement.dataset.theme=t:delete document.documentElement.dataset.theme;render()}
 function clearDemo(){const ids=S.pacientes.filter(p=>p.demo).map(p=>p.id);S.pacientes=S.pacientes.filter(p=>!p.demo);S.agenda=S.agenda.filter(a=>!ids.includes(a.pid));save();render();toast('Exemplos removidos')}
 
@@ -1006,6 +1096,9 @@ function seed(force){
 try{const th=localStorage.getItem(KEY+'_theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
 seed(false);
 render();
+syncUI();
+if(cloudOn()){C.status='saving';syncUI();cloudLoad(false).catch(()=>{C.status='erro';syncUI()})}
+setInterval(cloudRefresh,120000);window.addEventListener('focus',cloudRefresh);
 </script>
 </body>
 </html>
